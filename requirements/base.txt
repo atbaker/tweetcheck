@@ -1,0 +1,4 @@
+# Base requirements
+
+Django==1.7
+psycopg2==2.5.4
