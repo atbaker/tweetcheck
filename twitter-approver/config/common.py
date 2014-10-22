@@ -111,3 +111,10 @@ MEDIA_URL = '/media/'
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
+
+# Project-specific settings
+TWITTER_API_KEY = os.environ.get('TWITTER_API_KEY')
+TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')
+
+ATB_ACCESS_TOKEN = os.environ.get('ATB_ACCESS_TOKEN')
+ATB_TOKEN_SECRET = os.environ.get('ATB_TOKEN_SECRET')

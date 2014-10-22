@@ -3,3 +3,5 @@
 Django==1.7
 djangorestframework==2.4.3
 psycopg2==2.5.4
+requests==2.4.3
+requests-oauthlib==0.4.2
