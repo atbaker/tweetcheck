@@ -1,0 +1,28 @@
+{% load staticfiles %}
+
+<html lang="en" ng-app="tweetCheckApp">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>TweetCheck</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="{% static "bower_components/bootstrap/dist/css/bootstrap.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "css/tweet-check.css" %}">
+
+        <script src="{% static "bower_components/jquery/dist/jquery.js" %}"></script>
+        <script src="{% static "bower_components/angular/angular.js" %}"></script>
+        <script src="{% static "bower_components/angular-route/angular-route.js" %}"></script>
+        <script src="{% static "bower_components/angular-resource/angular-resource.js" %}"></script>
+        <script src="{% static "js/tweet-check.js" %}"></script>
+        <script src="{% static "js/controllers.js" %}"></script>
+        <script src="{% static "js/filters.js" %}"></script>
+        <script src="{% static "js/services.js" %}"></script>
+    </head>
+
+    <body>
+        <div ng-view class="container-fluid">
+        </div>
+    </body>
+</html>

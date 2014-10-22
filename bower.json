@@ -1,0 +1,15 @@
+{
+  "name": "twitter-approver",
+  "description": "A tool to help organizations moderate their tweets",
+  "version": "0.1.0",
+  "homepage": "https://github.com/atbaker/twitter-approver",
+  "private": true,
+  "dependencies": {
+    "angular": "1.3.x",
+    "angular-route": "1.3.x",
+    "angular-resource": "1.3.x",
+    "angular-mocks": "1.3.x",
+    "bootstrap": "3.2.x",
+    "jquery": "2.1.x"
+  }
+}

@@ -1,4 +1,5 @@
 # Base requirements
 
 Django==1.7
+djangorestframework==2.4.3
 psycopg2==2.5.4

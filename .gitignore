@@ -1,6 +1,9 @@
 # Project-specific
 .env
 
+# Bower
+bower_components/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

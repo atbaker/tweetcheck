@@ -38,11 +38,11 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-
+    'rest_framework',
 )
 
 LOCAL_APPS = (
-
+    'twitter',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -85,6 +85,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Template settings
+TEMPLATE_DIRS = (
+    join(BASE_DIR, 'templates'),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -102,3 +106,8 @@ MEDIA_ROOT = join(BASE_DIR, 'media')
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
+
+# REST Framework
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10
+}
