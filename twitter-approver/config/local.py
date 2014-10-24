@@ -14,11 +14,11 @@ TEMPLATE_DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'twitter_approver',
-        'USER': 'atbaker',
+        'NAME': 'postgres',
+        'USER': 'postgres',
         'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': os.environ.get('POSTGRES_PORT_5432_TCP_ADDR'),
+        'PORT': os.environ.get('POSTGRES_PORT_5432_TCP_PORT'),
     }
 }
 

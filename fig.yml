@@ -1,0 +1,16 @@
+# Fig configuration file for Hypermasher
+
+django:
+  build: .
+  ports:
+    - "8000:8000"
+  links:
+    - database:postgres
+  environment:
+    TWITTER_API_KEY:
+    TWITTER_API_SECRET:
+  # volumes:
+  #   - .:/usr/src/app
+
+database:
+  image: postgres
