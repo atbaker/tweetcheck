@@ -4,9 +4,10 @@
     <h2>{{foo}}</h2>
 
     <ul class="tweets">
-      <li ng-repeat="tweet in tweets.results" class="tweet-list">
+      <li ng-repeat="tweet in tweets.results | filter:{approved: false}" class="tweet-list">
         <h3>Tweet</h3>
         <p>{{tweet.url}}</p>
+        <p>{{tweet.handle}}</p>
         <p>{{tweet.body}}</p>
         <p>{{tweet.approved}}</p>
         <button ng-click="approveTweet(tweet)" type="button" class="btn btn-primary">Primary</button>

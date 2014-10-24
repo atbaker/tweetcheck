@@ -11,8 +11,12 @@ var tweetCheckApp = angular.module('tweetCheckApp', [
 tweetCheckApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/', {
-        templateUrl: 'static/partials/tweet-list.html',
-        controller: 'TweetListCtrl'
+      templateUrl: 'static/partials/tweet-list.html',
+      controller: 'TweetListCtrl'
+    }).
+    when('/authorize', {
+      templateUrl: 'static/partials/authorize.html',
+      controller: 'AuthorizeCtrl'
     }).
     otherwise({redirectTo: '/'});
 }]);

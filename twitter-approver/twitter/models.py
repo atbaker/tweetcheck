@@ -4,10 +4,23 @@ from requests_oauthlib import OAuth1
 
 import requests
 
+class Handle(models.Model):
+    screen_name = models.CharField(max_length=50)
+    access_token = models.CharField(max_length=100)
+    token_secret = models.CharField(max_length=100)
+    # TO-DO: FK to User
+
+    class Meta:
+        ordering = ('screen_name',)
+
+    def __unicode__(self):
+        return u'{0}'.format(self.screen_name)
+
 class Tweet(models.Model):
     body = models.CharField(max_length=250)
     approved = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    handle = models.ForeignKey(Handle)
 
     class Meta:
         ordering = ('created',)
@@ -25,7 +38,7 @@ class Tweet(models.Model):
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'
         auth = OAuth1(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET,
-                  settings.ATB_ACCESS_TOKEN, settings.ATB_TOKEN_SECRET)
+                  self.handle.access_token, self.handle.token_secret)
         payload = {
             'status': self.body,
         }
