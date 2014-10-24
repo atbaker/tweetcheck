@@ -8,6 +8,6 @@ tweetCheckServices.factory('Tweet', ['$resource',
   function($resource){
     return $resource('api/tweets/:tweetId', {}, {
       query: {method:'GET', isArray: false},
-      approve: {method:'PATCH', data:{approved: true}}
+      update: {method:'PUT'}
     });
 }]);

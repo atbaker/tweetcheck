@@ -16,3 +16,8 @@ tweetCheckApp.config(['$routeProvider', function($routeProvider) {
     }).
     otherwise({redirectTo: '/'});
 }]);
+
+tweetCheckApp.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+}]);

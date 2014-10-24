@@ -6,4 +6,4 @@ class TweetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = ('url', 'body', 'approved',)
+        fields = ('url', 'id', 'body', 'approved',)
