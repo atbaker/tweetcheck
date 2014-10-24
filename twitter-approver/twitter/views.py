@@ -1,17 +1,14 @@
+from django.conf import settings
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from requests_oauthlib import OAuth1, OAuth1Session
 from rest_framework import viewsets
+
+import json
+import requests
 
 from .models import Tweet, Handle
 from .serializers import TweetSerializer, HandleSerializer
-
-from requests_oauthlib import OAuth1, OAuth1Session
-from django.conf import settings
-
-import json
-
-from django.http import HttpResponse
-from django.shortcuts import redirect
-
-import requests
 
 
 class TweetViewSet(viewsets.ModelViewSet):
@@ -31,7 +28,7 @@ def get_request_token(request):
     request.session['resource_owner_key'] = fetch_response.get('oauth_token')
     request.session['resource_owner_secret'] = fetch_response.get('oauth_token_secret')
 
-    base_authorization_url = 'https://api.twitter.com/oauth/authenticate'
+    base_authorization_url = 'https://api.twitter.com/oauth/authorize'
     authorization_url = oauth.authorization_url(base_authorization_url)
 
     return HttpResponse(json.dumps({'authorizationUrl': authorization_url}))

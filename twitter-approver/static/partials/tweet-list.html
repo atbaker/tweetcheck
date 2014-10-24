@@ -1,7 +1,8 @@
 <div class="row">
   <div class="col-md-10">
 
-    <h2>{{foo}}</h2>
+    <h2>Tweets pending approval</h2>
+    <a href="#/authorize" class="btn btn-primary">Authorize</a>
 
     <ul class="tweets">
       <li ng-repeat="tweet in tweets.results | filter:{approved: false}" class="tweet-list">
