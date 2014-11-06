@@ -5,12 +5,13 @@ django:
   ports:
     - "8000:8000"
   links:
-    - database:postgres
+    - db:postgres
   environment:
     TWITTER_API_KEY:
     TWITTER_API_SECRET:
-  # volumes:
-  #   - .:/usr/src/app
+    DJANGO_SETTINGS_MODULE:
+  volumes:
+    - .:/usr/src/app
 
-database:
+db:
   image: postgres
