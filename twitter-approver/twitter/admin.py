@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from .models import Tweet
+from .models import Tweet, Handle
 
-class TweetAdmin(admin.ModelAdmin):
+class BasicAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Tweet, TweetAdmin)
+admin.site.register(Tweet, BasicAdmin)
+admin.site.register(Handle, BasicAdmin)
