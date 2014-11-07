@@ -3,12 +3,19 @@
 
     <h2>Compose new tweet</h2>
 
-    <form name="composeForm">
-      Handle: <select ng-model="newTweet.handle" ng-options="handle.url as handle.screen_name for handle in handles.results" required></select>
-      Body: <input type="text" name="body" ng-model="newTweet.body" required>
-      <span class="error" ng-show="composeForm.body.$error.required">
-        Required!</span>
-      <button class="btn btn-primary" ng-click="create(newTweet)">SAVE</button>
+    <form role="form" name="composeForm">
+      <div class="form-group">
+        <label for="InputHandle">Handle</label>
+        <select class="form-control" id="InputHandle" ng-model="newTweet.handle" ng-options="handle.url as handle.screen_name for handle in handles.results" required></select>
+      </div>
+      <div class="form-group">
+        <label for="InputBody">Body</label>
+        <textarea class="form-control" rows="3" name="body" id="InputBody" ng-model="newTweet.body" required></textarea>
+        <span class="error" ng-show="composeForm.body.$error.required">
+          Required!
+        </span>
+      </div>
+      <button class="btn btn-primary" ng-click="create(newTweet)">Send for approval</button>
     </form>
 
   </div>
