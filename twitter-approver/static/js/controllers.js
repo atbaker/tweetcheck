@@ -32,6 +32,10 @@ tweetCheckControllers.controller('ComposeCtrl', ['$scope', 'Handle', 'Tweet',
     $scope.remainingCharacters = 140;
 
     $scope.updateCharacterCounter = function(body) {
+      if (body === undefined) {
+        $scope.remainingCharacters = 140;
+        return;
+      }
       var splitBody = body.split(' ');
       var remaining = 140;
 
