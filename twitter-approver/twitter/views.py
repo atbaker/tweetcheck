@@ -1,11 +1,10 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from requests_oauthlib import OAuth1, OAuth1Session
+from requests_oauthlib import OAuth1Session
 from rest_framework import viewsets
 
 import json
-import requests
 
 from .models import Tweet, Handle
 from .serializers import TweetSerializer, HandleSerializer
@@ -56,6 +55,7 @@ def callback(request):
 
     Handle.objects.get_or_create(
         screen_name=screen_name,
+        # organization=request.user.organization,
         access_token=resource_owner_key,
         token_secret=resource_owner_secret)
 

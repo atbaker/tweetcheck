@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
+    'core',
     'twitter',
 )
 
@@ -71,6 +72,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+AUTH_USER_MODEL = 'core.TweetCheckUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

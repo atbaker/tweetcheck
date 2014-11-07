@@ -6,9 +6,9 @@ import requests
 
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)
+    organization = models.ForeignKey('core.Organization')
     access_token = models.CharField(max_length=100)
     token_secret = models.CharField(max_length=100)
-    # TO-DO: FK to User
 
     class Meta:
         ordering = ('screen_name',)
