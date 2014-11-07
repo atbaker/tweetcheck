@@ -4,6 +4,9 @@
 
 var tweetCheckControllers = angular.module('tweetCheckControllers', []);
 
+var shortUrlLength = 22;
+var shortUrlLengthHttps = 23;
+
 tweetCheckControllers.controller('AuthorizeCtrl', ['$scope', '$http',
   function($scope, $http) {
     $scope.getRequestToken = function() {
@@ -26,6 +29,24 @@ tweetCheckControllers.controller('TweetListCtrl', ['$scope', 'Tweet',
 tweetCheckControllers.controller('ComposeCtrl', ['$scope', 'Handle', 'Tweet',
   function($scope, Handle, Tweet) {
     $scope.handles = Handle.query();
+    $scope.remainingCharacters = 140;
+
+    $scope.updateCharacterCounter = function(body) {
+      var splitBody = body.split(' ');
+      var remaining = 140;
+
+      for (var i=0; i<splitBody.length; i++) {
+        if (splitBody[i].substring(0, 7) === 'http://' && splitBody[i].length > shortUrlLength) {
+          remaining -= shortUrlLength;
+        } else if (splitBody[i].substring(0, 8) === 'https://' && splitBody[i].length > shortUrlLengthHttps) {
+          remaining -= shortUrlLengthHttps;
+        } else {
+          remaining -= Math.max(splitBody[i].length, 1);
+        }
+      }
+      $scope.remainingCharacters = remaining;
+    };
+
     $scope.create = function(newTweet) {
       Tweet.save(newTweet);
     };
