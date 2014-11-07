@@ -14,6 +14,10 @@ tweetCheckApp.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'static/partials/tweet-list.html',
       controller: 'TweetListCtrl'
     }).
+    when('/compose', {
+      templateUrl: 'static/partials/compose.html',
+      controller: 'ComposeCtrl'
+    }).
     when('/authorize', {
       templateUrl: 'static/partials/authorize.html',
       controller: 'AuthorizeCtrl'
@@ -22,6 +26,10 @@ tweetCheckApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 tweetCheckApp.config(['$httpProvider', function($httpProvider) {
-    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+}]);
+
+tweetCheckApp.config(['$resourceProvider', function($resourceProvider) {
+  $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
