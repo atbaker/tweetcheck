@@ -53,5 +53,6 @@ tweetCheckControllers.controller('ComposeCtrl', ['$scope', 'Handle', 'Tweet',
 
     $scope.create = function(newTweet) {
       Tweet.save(newTweet);
+      window.location.href = '/#';
     };
 }]);
