@@ -14,7 +14,7 @@ class Handle(models.Model):
         ordering = ('screen_name',)
 
     def __unicode__(self):
-        return u'{0}'.format(self.screen_name)
+        return u'{0} ({1})'.format(self.screen_name, self.organization)
 
 class Tweet(models.Model):
     body = models.CharField(max_length=250)

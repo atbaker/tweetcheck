@@ -6,7 +6,7 @@
     <form role="form" name="composeForm">
       <div class="form-group">
         <label for="InputHandle">Handle</label>
-        <select class="form-control" id="InputHandle" ng-model="newTweet.handle" ng-options="handle.url as handle.screen_name for handle in handles.results" required></select>
+        <select class="form-control" id="InputHandle" ng-model="newTweet.handle" ng-options="handle.url as handle.name_with_organization for handle in handles.results" required></select>
       </div>
       <div class="form-group">
         <label for="InputBody">Body</label>

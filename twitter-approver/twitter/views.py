@@ -55,7 +55,7 @@ def callback(request):
 
     Handle.objects.get_or_create(
         screen_name=screen_name,
-        # organization=request.user.organization,
+        organization=request.user.organization,
         access_token=resource_owner_key,
         token_secret=resource_owner_secret)
 
