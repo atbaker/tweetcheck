@@ -2,6 +2,6 @@
 Production Configurations
 '''
 
-from .common import Common
+from .common import *
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
