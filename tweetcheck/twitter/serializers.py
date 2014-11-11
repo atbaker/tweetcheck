@@ -12,7 +12,6 @@ class HandleSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
-    handle = HandleSerializer()
 
     class Meta:
         model = Tweet
