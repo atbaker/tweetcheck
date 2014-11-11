@@ -1,14 +1,14 @@
 'use strict';
 
 // App module
-var tweetCheckApp = angular.module('tweetCheckApp', [
+var tweetCheck = angular.module('tweetCheck', [
   'ngRoute',
   'tweetCheckControllers',
   'tweetCheckFilters',
   'tweetCheckServices'
 ]);
 
-tweetCheckApp.config(['$routeProvider', function($routeProvider) {
+tweetCheck.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/', {
       templateUrl: 'static/partials/tweet-list.html',
@@ -25,11 +25,11 @@ tweetCheckApp.config(['$routeProvider', function($routeProvider) {
     otherwise({redirectTo: '/'});
 }]);
 
-tweetCheckApp.config(['$httpProvider', function($httpProvider) {
+tweetCheck.config(['$httpProvider', function($httpProvider) {
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
 }]);
 
-tweetCheckApp.config(['$resourceProvider', function($resourceProvider) {
+tweetCheck.config(['$resourceProvider', function($resourceProvider) {
   $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
