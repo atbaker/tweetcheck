@@ -30,4 +30,4 @@ RUN bower install --allow-root
 
 EXPOSE 8000
 
-CMD [ "python", "twitter-approver/manage.py", "runserver", "0.0.0.0:8000"]
+CMD [ "python", "tweetcheck/manage.py", "runserver", "0.0.0.0:8000"]
