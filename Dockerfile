@@ -18,6 +18,9 @@ RUN curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x
     && npm install -g npm@"$NPM_VERSION" \
     && npm cache clear
 
+# Install Bower
+RUN npm install -g bower
+
 # Configure local
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -25,9 +28,9 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN pip install -r requirements/local.txt
 
-RUN npm install -g bower
+# Install bower dependencies
 RUN bower install --allow-root
 
 EXPOSE 8000
 
-CMD [ "python", "tweetcheck/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "-c", "tweetcheck/config/gunicorn_config.py", "wsgi:application"]
