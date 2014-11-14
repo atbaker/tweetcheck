@@ -15,8 +15,7 @@ db:
   image: postgres:9.3
 
 nginx:
-  # image: nginx:1.7
-  image: nginx-foo
+  image: atbaker/tweetcheck-nginx
   ports:
     - "8000:80"
   links:
