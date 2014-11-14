@@ -2,8 +2,6 @@
 
 django:
   build: .
-  ports:
-    - "8000:8000"
   links:
     - db:postgres
   environment:
@@ -14,4 +12,12 @@ django:
     - .:/usr/src/app
 
 db:
-  image: postgres
+  image: postgres:9.3
+
+nginx:
+  # image: nginx:1.7
+  image: nginx-foo
+  ports:
+    - "8000:80"
+  links:
+    - django:gunicorn
