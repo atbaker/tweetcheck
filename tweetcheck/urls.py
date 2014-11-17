@@ -4,7 +4,6 @@ from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 
 from core.forms import LoginForm
-from core.views import CSRFExemptObtainAuthToken
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
