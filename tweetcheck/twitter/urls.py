@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 # Create a router and register our viewsets with it.
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r'tweets', views.TweetViewSet)
 router.register(r'handles', views.HandleViewSet)
 
