@@ -6,7 +6,7 @@
     <ul class="tweets">
       <li ng-repeat="tweet in tweets.results | filter:{approved: false}" class="tweet-list">
         <h3>Tweet</h3>
-        <p>{{tweet.handle.screen_name}}</p>
+        <p>{{tweet.screen_name}}</p>
         <p>{{tweet.body}}</p>
         <p>{{tweet.approved}}</p>
         <button ng-click="approveTweet(tweet)" type="button" class="btn btn-primary">Post</button>

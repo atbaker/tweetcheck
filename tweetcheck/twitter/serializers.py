@@ -12,7 +12,8 @@ class HandleSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
+    screen_name = serializers.CharField(source='handle.screen_name', read_only=True)
 
     class Meta:
         model = Tweet
-        fields = ('url', 'id', 'handle', 'body', 'approved',)
+        fields = ('url', 'id', 'handle', 'screen_name', 'body', 'approved',)
