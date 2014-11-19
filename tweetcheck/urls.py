@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
 
-    url(r'^auth/request$', 'get_request_token'),
-    url(r'^auth/callback$', 'callback'),
+    url(r'^auth/request$', 'twitter.views.get_request_token'),
+    url(r'^auth/callback$', 'twitter.views.callback'),
 
     url(r'^login/$', 'django.contrib.auth.views.login',
         {'template_name': 'login.html',
