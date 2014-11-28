@@ -11,16 +11,14 @@
         <meta name="robots" content="noindex, nofollow">
 
         <link rel="stylesheet" type="text/css" href="{% static "bower_components/bootstrap/dist/css/bootstrap.css" %}">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{% static "css/tweet-check.css" %}">
-
-        <script src="{% static "bower_components/jquery/dist/jquery.js" %}"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "css/admin.css" %}">
 
         {% block ng-head %}{% endblock %}
     </head>
 
     <body>
-        <div class="container-fluid">
-          {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </body>
 </html>

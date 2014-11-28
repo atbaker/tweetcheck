@@ -11,15 +11,15 @@ var tweetCheck = angular.module('tweetCheck', [
 tweetCheck.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
     when('/', {
-      templateUrl: 'static/partials/tweet-list.html',
+      templateUrl: 'static/views/tweet-list.html',
       controller: 'TweetListCtrl'
     }).
     when('/compose', {
-      templateUrl: 'static/partials/compose.html',
+      templateUrl: 'static/views/compose.html',
       controller: 'ComposeCtrl'
     }).
     when('/authorize', {
-      templateUrl: 'static/partials/authorize.html',
+      templateUrl: 'static/views/authorize.html',
       controller: 'AuthorizeCtrl'
     }).
     otherwise({redirectTo: '/'});
