@@ -8,7 +8,8 @@ class HandleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Handle
-        fields = ('url', 'id', 'screen_name', 'organization', 'name_with_organization')
+        fields = ('url', 'id', 'screen_name', 'organization', 'name_with_organization',
+            'user_id', 'name', 'profile_image_url')
 
 
 class TweetSerializer(serializers.HyperlinkedModelSerializer):

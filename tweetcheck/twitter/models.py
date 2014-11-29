@@ -10,11 +10,33 @@ class Handle(models.Model):
     access_token = models.CharField(max_length=100)
     token_secret = models.CharField(max_length=100)
 
+    # Other Handle details - updated regularly
+    user_id = models.BigIntegerField(null=True, blank=True)
+    name = models.CharField(max_length=100, blank=True)
+    profile_image_url = models.URLField(blank=True)
+
     class Meta:
         ordering = ('screen_name',)
 
     def __unicode__(self):
         return u'{0} ({1})'.format(self.screen_name, self.organization)
+
+    def update_details(self):
+        url = 'https://api.twitter.com/1.1/users/show.json'
+        auth = OAuth1(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET,
+                  self.access_token, self.token_secret)
+        payload = {
+            'screen_name': self.screen_name
+        }
+
+        response = requests.get(url, auth=auth, params=payload)
+        details = response.json()
+
+        self.user_id = details['id']
+        self.name = details['name']
+        self.profile_image_url = details['profile_image_url']
+
+        self.save()
 
 class Tweet(models.Model):
     body = models.CharField(max_length=250)
