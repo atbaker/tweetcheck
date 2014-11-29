@@ -2,6 +2,7 @@
 
 django:
   build: .
+  command: "gunicorn -c tweetcheck/config/gunicorn_config.py --reload wsgi:application"
   links:
     - db:postgres
   environment:
