@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-md-12">
+        <img class="" alt="" ng-src="{{handles[tweet.handle].profile_image_url}}" style="float: left;">
+        <ul class="list-unstyled card-heading">
+            <li class="handle-name">{{handles[tweet.handle].name}}</li>
+            <li class="small text-muted">@{{handles[tweet.handle].screen_name}}</li>
+        </ul>
+    </div>
+</div>
+
+<div class="row card-body">
+    <div class="col-md-12">
+        <p class="lead tweet-body">{{tweet.body}}</p>
+    </div>
+</div>

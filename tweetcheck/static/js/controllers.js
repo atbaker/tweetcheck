@@ -16,9 +16,18 @@ tweetCheckControllers.controller('AuthorizeCtrl', ['$scope', '$http',
     };
 }]);
 
-tweetCheckControllers.controller('TweetListCtrl', ['$scope', 'Tweet',
-  function($scope, Tweet) {
-    $scope.tweets = Tweet.query();
+tweetCheckControllers.controller('TweetListCtrl', ['$scope', 'Tweet', 'Handle',
+  function($scope, Tweet, Handle) {
+    $scope.handles = {};
+    $scope.tweets = Tweet.query(function() {
+      // Populate the handles object with details about each handle in these tweets
+      for (var i=0; i<$scope.tweets.results.length; i++) {
+        var handleId = $scope.tweets.results[i].handle;
+        if (!$scope.handles.hasOwnProperty(handleId)) {
+          $scope.handles[handleId] = Handle.query({handleId: handleId});
+        }
+      }
+    });
 
     $scope.approveTweet = function(tweet) {
       tweet.approved = true;

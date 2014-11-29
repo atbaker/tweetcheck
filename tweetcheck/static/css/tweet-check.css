@@ -1,0 +1,16 @@
+.card-heading {
+    margin-left: 60px;
+}
+
+.handle-name {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.card-body {
+    margin-top: 4px;
+}
+
+.tweet-body {
+    margin-bottom: 0;
+}

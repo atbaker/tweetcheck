@@ -11,12 +11,12 @@
         <h5>Submitted by Andrew at 4:03pm</h5>
       </div>
       <div class="panel-body">
-        <p>{{tweet.screen_name}}</p>
-        <p>{{tweet.body}}</p>
-        <p>{{tweet.approved}}</p>
+        <div ng-include="'static/views/partials/tweet-card.html'"></div>
       </div>
       <div class="panel-footer">
-        <button ng-click="approveTweet(tweet)" type="button" class="btn btn-primary">Post</button>
+          <button ng-click="" type="button" class="btn btn-primary"><span class="fa fa-pencil-square"></span> Edit</button>
+          <button ng-click="" type="button" class="btn btn-danger"><span class="fa fa-remove"></span> Reject</button>
+          <button ng-click="approveTweet(tweet)" type="button" class="btn btn-success"><span class="fa fa-check"></span> Post</button>
       </div>
     </div>
   </div>
