@@ -1,21 +1,7 @@
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-
 from django import forms
-from django.contrib.auth.models import Group
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import TweetCheckUser
-
-
-class LoginForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Login', css_class='btn btn-primary btn-block'))
-
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
