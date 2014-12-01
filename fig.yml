@@ -19,7 +19,7 @@ nginx:
   # image: atbaker/tweetcheck-angular
   build: ../tweetcheck-angular
   volumes:
-    - ../tweetcheck-angular/app:/usr/share/nginx/html
+    - ../tweetcheck-angular:/usr/share/nginx/html
     - ../tweetcheck-angular/nginx.conf:/etc/nginx/nginx.conf
   ports:
     - "8000:80"
