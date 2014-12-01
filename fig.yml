@@ -16,7 +16,11 @@ db:
   image: postgres:9.3
 
 nginx:
-  image: atbaker/tweetcheck-nginx
+  # image: atbaker/tweetcheck-nginx
+  build: ../tweetcheck-nginx
+  volumes:
+    - ../tweetcheck-nginx/app:/usr/share/nginx/html
+    - ../tweetcheck-nginx/nginx.conf:/etc/nginx/nginx.conf
   ports:
     - "8000:80"
   links:

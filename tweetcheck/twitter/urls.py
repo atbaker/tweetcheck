@@ -1,6 +1,4 @@
 from django.conf.urls import url, patterns, include
-from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
 from . import views
@@ -14,5 +12,4 @@ router.register(r'handles', views.HandleViewSet)
 # Additionally, we include the login URLs for the browseable API.
 urlpatterns = patterns('twitter.views',
     url(r'^api/', include(router.urls)),
-    url(r'^$', login_required(TemplateView.as_view(template_name="ng-base.html"))),
 )
