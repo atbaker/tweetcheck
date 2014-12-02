@@ -47,7 +47,7 @@ class Tweet(models.Model):
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
-    last_editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
+    last_editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name=u'+')
     last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:

@@ -91,10 +91,11 @@ class Action(models.Model):
     actor = models.ForeignKey(TweetCheckUser)
     action = models.CharField(max_length=2, choices=ACTION_CHOICES)
     tweet = models.ForeignKey('twitter.Tweet')
+    body = models.CharField(max_length=250)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-timestamp']
 
     def __unicode__(self):
-        return 'action #{0}'.format(self.id)
+        return u'#{0} "{1}"'.format(self.id, self.body[:50])
