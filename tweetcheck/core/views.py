@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from .models import TweetCheckUser
+from .serializers import UserSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = TweetCheckUser.objects.filter(is_active=True)
+    serializer_class = UserSerializer

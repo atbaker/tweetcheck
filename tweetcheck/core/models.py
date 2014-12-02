@@ -57,7 +57,7 @@ class TweetCheckUser(AbstractBaseUser):
         return self.email
 
     def get_short_name(self):
-        return self.email
+        return self.email.split('@')[0]
 
     def __unicode__(self):
         return self.email

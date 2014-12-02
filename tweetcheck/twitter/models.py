@@ -39,10 +39,14 @@ class Handle(models.Model):
         self.save()
 
 class Tweet(models.Model):
+    handle = models.ForeignKey(Handle)
     body = models.CharField(max_length=250)
     approved = models.BooleanField(default=False)
+
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
-    handle = models.ForeignKey(Handle)
+    last_editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
+    last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ('created',)
