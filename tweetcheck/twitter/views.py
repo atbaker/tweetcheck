@@ -14,6 +14,12 @@ class TweetViewSet(viewsets.ModelViewSet):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
 
+    def pre_save(self, obj):
+        if not hasattr(obj, 'author'):
+            obj.author = self.request.user
+
+        obj.last_editor = self.request.user
+
 class HandleViewSet(viewsets.ModelViewSet):
     queryset = Handle.objects.all()
     serializer_class = HandleSerializer
