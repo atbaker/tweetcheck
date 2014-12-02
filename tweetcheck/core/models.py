@@ -99,3 +99,9 @@ class Action(models.Model):
 
     def __unicode__(self):
         return u'#{0} "{1}"'.format(self.id, self.body[:50])
+
+    def save(self, *args, **kwargs):
+        self.organization = self.tweet.handle.organization
+        self.actor = self.tweet.last_editor
+        self.body = self.tweet.body
+        super(Action, self).save(*args, **kwargs)

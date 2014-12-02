@@ -16,4 +16,4 @@ class ActionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Action
-        fields = ('id', 'organization', 'actor', 'action', 'tweet', 'timestamp')
+        fields = ('id', 'organization', 'actor', 'action', 'tweet', 'body', 'timestamp')

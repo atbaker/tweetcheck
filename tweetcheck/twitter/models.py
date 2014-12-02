@@ -69,9 +69,7 @@ class Tweet(models.Model):
         
         super(Tweet, self).save(*args, **kwargs)
 
-        action = Action(organization=self.handle.organization,
-            actor=self.last_editor,
-            action=activity_action,
+        action = Action(action=activity_action,
             tweet=self)
         action.save()
 
