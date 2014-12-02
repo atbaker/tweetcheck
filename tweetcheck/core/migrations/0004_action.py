@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='Action',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('action', models.CharField(max_length=2, choices=[(b'CR', b'created'), (b'ED', b'edited'), (b'PO', b'posted')])),
+                ('action', models.CharField(max_length=2, choices=[('CR', 'created'), ('ED', 'edited'), ('PO', 'posted')])),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
                 ('actor', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
                 ('organization', models.ForeignKey(to='core.Organization')),
