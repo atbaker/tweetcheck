@@ -79,3 +79,22 @@ class TweetCheckUser(AbstractBaseUser):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+class Action(models.Model):
+    ACTION_CHOICES = (
+        ('CR', 'created'),
+        ('ED', 'edited'),
+        ('PO', 'posted')
+    )
+
+    organization = models.ForeignKey(Organization)
+    actor = models.ForeignKey(TweetCheckUser)
+    action = models.CharField(max_length=2, choices=ACTION_CHOICES)
+    tweet = models.ForeignKey('twitter.Tweet')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __unicode__(self):
+        return 'action #{0}'.format(self.id)

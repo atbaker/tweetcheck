@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import TweetCheckUser, Organization
+from .models import TweetCheckUser, Organization, Action
 
 
 class TweetCheckUserAdmin(UserAdmin):
@@ -34,6 +34,8 @@ class TweetCheckUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 admin.site.register(TweetCheckUser, TweetCheckUserAdmin)
-admin.site.unregister(Group)
 
+admin.site.unregister(Group)
 admin.site.register(Organization, admin.ModelAdmin)
+
+admin.site.register(Action, admin.ModelAdmin)

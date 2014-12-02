@@ -4,6 +4,8 @@ from requests_oauthlib import OAuth1
 
 import requests
 
+from core.models import Action
+
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)
     organization = models.ForeignKey('core.Organization')
@@ -59,7 +61,19 @@ class Tweet(models.Model):
             original = Tweet.objects.get(pk=self.pk)
             if (not original.approved) and self.approved:
                 self.publish()
+                activity_action = 'PO'
+            else:
+                activity_action = 'ED'
+        else:
+            activity_action = 'CR'
+        
         super(Tweet, self).save(*args, **kwargs)
+
+        action = Action(organization=self.handle.organization,
+            actor=self.last_editor,
+            action=activity_action,
+            tweet=self)
+        action.save()
 
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'

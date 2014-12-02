@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TweetCheckUser
+from .models import TweetCheckUser, Action
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -9,3 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TweetCheckUser
         fields = ('id', 'email', 'email_without_domain', 'organization', 'is_approver')
+
+class ActionSerializer(serializers.ModelSerializer):
+    actor = serializers.CharField(source='actor.get_short_name')
+    action = serializers.CharField(source='get_action_display')
+
+    class Meta:
+        model = Action
+        fields = ('id', 'organization', 'actor', 'action', 'tweet', 'timestamp')

@@ -4,12 +4,13 @@ from django.contrib import admin
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
 
-from core.views import UserViewSet
+from core.views import UserViewSet, ActionViewSet
 from twitter.views import TweetViewSet, HandleViewSet
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
+router.register(r'actions', ActionViewSet)
 router.register(r'tweets', TweetViewSet)
 router.register(r'handles', HandleViewSet)
 
