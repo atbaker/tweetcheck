@@ -54,6 +54,7 @@ class Tweet(models.Model):
     handle = models.ForeignKey(Handle)
     body = models.CharField(max_length=250)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    twitter_id = models.BigIntegerField(null=True, blank=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
@@ -70,7 +71,7 @@ class Tweet(models.Model):
         if self.pk is not None:
             original = Tweet.objects.get(pk=self.pk)
             if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
-                self.publish()
+                self.twitter_id = self.publish()
                 activity_action = Action.POSTED
             elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
                 activity_action = Action.REJECTED
@@ -94,5 +95,6 @@ class Tweet(models.Model):
         }
 
         # TO-DO: Add some error handling here
-        requests.post(url, auth=auth, params=payload)
-        return
+        response = requests.post(url, auth=auth, params=payload)
+        data = response.json()
+        return data['id']
