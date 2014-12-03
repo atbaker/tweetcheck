@@ -11,8 +11,8 @@ class Organization(models.Model):
     class Meta:
         ordering = ('name',)
 
-    def __unicode__(self):
-        return u'{0}'.format(self.name)
+    def __str__(self):
+        return '{0}'.format(self.name)
 
 class TweetUserManager(BaseUserManager):
     def create_user(self, email, password, organization=None):
@@ -59,7 +59,7 @@ class TweetCheckUser(AbstractBaseUser):
     def get_short_name(self):
         return self.email.split('@')[0]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
@@ -81,24 +81,30 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class Action(models.Model):
+    REJECTED = -1
+    CREATED = 0
+    POSTED = 1
+    EDITED = 2
+
     ACTION_CHOICES = (
-        ('CR', 'created'),
-        ('ED', 'edited'),
-        ('PO', 'posted')
+        (REJECTED, 'rejected'),
+        (CREATED, 'created'),
+        (POSTED, 'posted'),
+        (EDITED, 'edited')
     )
 
     organization = models.ForeignKey(Organization)
     actor = models.ForeignKey(TweetCheckUser)
-    action = models.CharField(max_length=2, choices=ACTION_CHOICES)
-    tweet = models.ForeignKey('twitter.Tweet')
+    action = models.IntegerField(choices=ACTION_CHOICES)
+    tweet = models.ForeignKey('twitter.Tweet', null=True, on_delete=models.SET_NULL)
     body = models.CharField(max_length=250)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-timestamp']
 
-    def __unicode__(self):
-        return u'#{0} "{1}"'.format(self.id, self.body[:50])
+    def __str__(self):
+        return '#{0} "{1}"'.format(self.id, self.body[:50])
 
     def save(self, *args, **kwargs):
         self.organization = self.tweet.handle.organization

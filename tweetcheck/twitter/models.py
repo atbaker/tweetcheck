@@ -20,8 +20,8 @@ class Handle(models.Model):
     class Meta:
         ordering = ('screen_name',)
 
-    def __unicode__(self):
-        return u'{0} ({1})'.format(self.screen_name, self.organization)
+    def __str__(self):
+        return '{0} ({1})'.format(self.screen_name, self.organization)
 
     def update_details(self):
         url = 'https://api.twitter.com/1.1/users/show.json'
@@ -41,9 +41,19 @@ class Handle(models.Model):
         self.save()
 
 class Tweet(models.Model):
+    PENDING = 0
+    POSTED = 1
+    REJECTED = -1
+
+    STATUS_CHOICES = (
+        (PENDING, 'pending'),
+        (POSTED, 'posted'),
+        (REJECTED, 'rejected')
+    )
+
     handle = models.ForeignKey(Handle)
     body = models.CharField(max_length=250)
-    approved = models.BooleanField(default=False)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
@@ -53,19 +63,21 @@ class Tweet(models.Model):
     class Meta:
         ordering = ('created',)
 
-    def __unicode__(self):
-        return u'{0}'.format(self.body)
+    def __str__(self):
+        return '{0} - {1}'.format(self.id, self.body[:50])
 
     def save(self, *args, **kwargs):
         if self.pk is not None:
             original = Tweet.objects.get(pk=self.pk)
-            if (not original.approved) and self.approved:
+            if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
                 self.publish()
-                activity_action = 'PO'
+                activity_action = Action.POSTED
+            elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
+                activity_action = Action.REJECTED
             else:
-                activity_action = 'ED'
+                activity_action = Action.EDITED
         else:
-            activity_action = 'CR'
+            activity_action = Action.CREATED
         
         super(Tweet, self).save(*args, **kwargs)
 
