@@ -3,7 +3,7 @@ from .models import Tweet, Handle
 
 
 class HandleSerializer(serializers.ModelSerializer):
-    name_with_organization = serializers.CharField(source='__unicode__', read_only=True)
+    name_with_organization = serializers.CharField(source='__str__', read_only=True)
     organization = serializers.CharField(source='organization.name', read_only=True)
 
     class Meta:
