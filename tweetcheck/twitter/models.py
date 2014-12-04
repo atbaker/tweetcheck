@@ -54,7 +54,7 @@ class Tweet(models.Model):
     handle = models.ForeignKey(Handle)
     body = models.CharField(max_length=250)
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
-    twitter_id = models.BigIntegerField(null=True, blank=True)
+    twitter_id = models.CharField(max_length=25, blank=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(auto_now_add=True)
@@ -97,4 +97,4 @@ class Tweet(models.Model):
         # TO-DO: Add some error handling here
         response = requests.post(url, auth=auth, params=payload)
         data = response.json()
-        return data['id']
+        return data['id_str']
