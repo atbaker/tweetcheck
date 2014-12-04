@@ -19,3 +19,12 @@ class UserViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
 class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = Action
     serializer_class = ActionSerializer
+
+    def get_queryset(self):
+        queryset = super(ActionViewSet, self).get_queryset()
+
+        tweet_id = self.request.QUERY_PARAMS.get('tweet_id', None)
+        if tweet_id is not None:
+            queryset = queryset.filter(tweet=tweet_id)
+
+        return queryset
