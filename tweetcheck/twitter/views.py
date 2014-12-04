@@ -8,17 +8,20 @@ import json
 
 from .models import Tweet, Handle
 from .serializers import TweetSerializer, HandleSerializer
+from core.views import OrganizationQuerysetMixin
 
 
 class TweetViewSet(viewsets.ModelViewSet):
-    queryset = Tweet.objects.all()
+    model = Tweet
     serializer_class = TweetSerializer
 
     def get_queryset(self):
-        queryset = Tweet.objects.filter(handle__organization=self.request.user.organization)
+        queryset = self.model.objects.filter(handle__organization=self.request.user.organization)
+
         status = self.request.QUERY_PARAMS.get('status', None)
         if status is not None:
             queryset = queryset.filter(status=status)
+
         return queryset
 
     def pre_save(self, obj):
@@ -27,8 +30,8 @@ class TweetViewSet(viewsets.ModelViewSet):
 
         obj.last_editor = self.request.user
 
-class HandleViewSet(viewsets.ModelViewSet):
-    queryset = Handle.objects.all()
+class HandleViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
+    model = Handle
     serializer_class = HandleSerializer
 
 def get_request_token(request):
