@@ -14,6 +14,13 @@ class TweetViewSet(viewsets.ModelViewSet):
     queryset = Tweet.objects.all()
     serializer_class = TweetSerializer
 
+    def get_queryset(self):
+        queryset = Tweet.objects.filter(handle__organization=self.request.user.organization)
+        status = self.request.QUERY_PARAMS.get('status', None)
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        return queryset
+
     def pre_save(self, obj):
         if not hasattr(obj, 'author'):
             obj.author = self.request.user
