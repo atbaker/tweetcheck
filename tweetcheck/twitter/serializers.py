@@ -13,10 +13,11 @@ class HandleSerializer(serializers.ModelSerializer):
 
 
 class TweetSerializer(serializers.ModelSerializer):
+    screen_name = serializers.CharField(source='handle.screen_name', read_only=True)
     author = serializers.CharField(source='author.get_short_name', read_only=True)
     last_editor = serializers.CharField(source='last_editor.get_short_name', read_only=True)
 
     class Meta:
         model = Tweet
-        fields = ('id', 'handle', 'body', 'status', 'twitter_id', 'author', 'created', 'last_editor', 'last_modified')
+        fields = ('id', 'handle', 'screen_name', 'body', 'status', 'twitter_id', 'author', 'created', 'last_editor', 'last_modified')
         read_only_fields = ('twitter_id',)
