@@ -14,9 +14,14 @@ django:
 
 db:
   image: postgres:9.3
+  volumes_from:
+    - data
+
+data:
+  image: postgres:9.3
+  command: echo 'Data-only container'
 
 nginx:
-  # image: atbaker/tweetcheck-angular
   build: ../tweetcheck-angular
   volumes:
     - ../tweetcheck-angular:/usr/share/nginx/html

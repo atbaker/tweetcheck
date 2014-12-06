@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
+from django.utils import timezone
 
 
 class Migration(migrations.Migration):
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tweet',
             name='last_modified',
-            field=models.DateTimeField(default=datetime.datetime(2014, 12, 1, 18, 42, 56, 621594), auto_now=True),
+            field=models.DateTimeField(default=timezone.now(), auto_now=True),
             preserve_default=False,
         ),
     ]
