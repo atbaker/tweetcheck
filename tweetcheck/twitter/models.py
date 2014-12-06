@@ -38,7 +38,9 @@ class Handle(models.Model):
         self.name = details['name']
         self.profile_image_url = details['profile_image_url']
 
-        self.save()
+    def save(self, *args, **kwargs):
+        self.update_details()
+        super(Handle, self).save(*args, **kwargs)
 
 class Tweet(models.Model):
     PENDING = 0
