@@ -24,11 +24,11 @@ class TweetViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    def pre_save(self, obj):
-        if not hasattr(obj, 'author'):
-            obj.author = self.request.user
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, last_editor=self.request.user)
 
-        obj.last_editor = self.request.user
+    def perform_update(self, serializer):
+        serializer.save(last_editor=self.request.user)
 
 class HandleViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = Handle
