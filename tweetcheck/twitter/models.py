@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from requests_oauthlib import OAuth1
 
@@ -42,6 +43,26 @@ class Handle(models.Model):
         self.update_details()
         super(Handle, self).save(*args, **kwargs)
 
+def validate_tweet_body(value):
+    short_url_length = 22
+    short_url_length_https = 23
+
+    remaining = 140
+    split_body = value.split(' ')
+    if len(split_body) > 1:
+        remaining -= (len(split_body) - 1)
+
+    for word in split_body:
+        if word[0:7] == 'http://' and len(word) > short_url_length:
+            remaining -= short_url_length
+        elif word[0:8] == 'https://' and len(word) > short_url_length_https:
+            remaining -= short_url_length_https
+        else:
+            remaining -= len(word)
+
+    if remaining < 0:
+        raise ValidationError('Tweet body is too long')
+
 class Tweet(models.Model):
     PENDING = 0
     POSTED = 1
@@ -54,7 +75,7 @@ class Tweet(models.Model):
     )
 
     handle = models.ForeignKey(Handle)
-    body = models.CharField(max_length=250)
+    body = models.CharField(max_length=250, validators=[validate_tweet_body])
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     twitter_id = models.CharField(max_length=25, blank=True)
 
