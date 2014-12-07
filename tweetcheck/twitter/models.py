@@ -22,7 +22,7 @@ class Handle(models.Model):
         ordering = ('screen_name',)
 
     def __str__(self):
-        return '{0} ({1})'.format(self.screen_name, self.organization)
+        return '{0} (@{1})'.format(self.name, self.screen_name)
 
     def update_details(self):
         url = 'https://api.twitter.com/1.1/users/show.json'
