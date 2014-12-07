@@ -13,7 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
 class ActionSerializer(serializers.ModelSerializer):
     actor = serializers.CharField(source='actor.get_short_name')
     action = serializers.CharField(source='get_action_display')
+    handle = serializers.IntegerField(source='tweet.handle.id')
 
     class Meta:
         model = Action
-        fields = ('id', 'organization', 'actor', 'action', 'tweet', 'body', 'timestamp')
+        fields = ('id', 'organization', 'handle', 'actor', 'action', 'tweet', 'body', 'timestamp')

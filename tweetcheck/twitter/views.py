@@ -14,6 +14,7 @@ from core.views import OrganizationQuerysetMixin
 class TweetViewSet(viewsets.ModelViewSet):
     model = Tweet
     serializer_class = TweetSerializer
+    paginate_by = 25
 
     def get_queryset(self):
         queryset = self.model.objects.filter(handle__organization=self.request.user.organization)
