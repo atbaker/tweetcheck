@@ -7,14 +7,18 @@ class OrganizationQuerysetMixin(object):
     def get_queryset(self):
         return self.model.objects.filter(organization=self.request.user.organization)
 
-class UserViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
+class UserViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = TweetCheckUser
-    queryset = TweetCheckUser.objects.filter(is_active=True)
     serializer_class = UserSerializer
 
     def get_queryset(self):
         queryset = super(UserViewSet, self).get_queryset()
-        return queryset.filter(is_active=True)
+
+        token = self.request.QUERY_PARAMS.get('token', None)
+        if token is not None:
+            queryset = queryset.filter(auth_token__key=token)
+
+        return queryset
 
 class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = Action
