@@ -3,16 +3,19 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth1Session
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 import json
 
 from .models import Tweet, Handle
+from .permissions import IsApprover
 from .serializers import TweetSerializer, HandleSerializer
 from core.views import OrganizationQuerysetMixin
 
 
 class TweetViewSet(viewsets.ModelViewSet):
     model = Tweet
+    permission_classes = (IsAuthenticated,IsApprover)
     serializer_class = TweetSerializer
     paginate_by = 25
 
