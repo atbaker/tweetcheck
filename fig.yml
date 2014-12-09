@@ -21,6 +21,13 @@ data:
   image: postgres:9.3
   command: echo 'Data-only container'
 
+node:
+  build: ../tweetcheck-node
+  volumes:
+    - "../tweetcheck-node:/usr/src/app"
+  ports:
+    - "8080:8080"
+
 nginx:
   build: ../tweetcheck-angular
   volumes:
