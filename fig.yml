@@ -5,6 +5,7 @@ django:
   command: "gunicorn -c tweetcheck/config/gunicorn_config.py --reload wsgi:application"
   links:
     - db:postgres
+    - redis:redis
   environment:
     TWITTER_API_KEY:
     TWITTER_API_SECRET:
@@ -12,17 +13,22 @@ django:
   volumes:
     - .:/usr/src/app
 
+data:
+  image: postgres:9.3
+  command: echo 'Data-only container'
+
 db:
   image: postgres:9.3
   volumes_from:
     - data
 
-data:
-  image: postgres:9.3
-  command: echo 'Data-only container'
+redis:
+  image: redis:2.8
 
 node:
   build: ../tweetcheck-node
+  links:
+    - redis:redis
   volumes:
     - "../tweetcheck-node:/usr/src/app"
 
