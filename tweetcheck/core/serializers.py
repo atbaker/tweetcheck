@@ -4,7 +4,6 @@ from .models import TweetCheckUser, Action
 
 class UserSerializer(serializers.ModelSerializer):
     email_without_domain = serializers.CharField(source='get_short_name', read_only=True)
-    organization = serializers.CharField(source='organization.name', read_only=True)
 
     class Meta:
         model = TweetCheckUser
