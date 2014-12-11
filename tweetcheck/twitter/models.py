@@ -78,6 +78,7 @@ class Tweet(models.Model):
     handle = models.ForeignKey(Handle)
     body = models.CharField(max_length=250, validators=[validate_tweet_body])
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    eta = models.DateTimeField(blank=True, null=True)
     twitter_id = models.CharField(max_length=25, blank=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
