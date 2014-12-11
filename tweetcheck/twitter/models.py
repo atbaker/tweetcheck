@@ -114,10 +114,7 @@ class Tweet(models.Model):
             tweet=self)
         action.save()
 
-        if activity_action == Action.CREATED:
-            # Send a notification to redis for this org's channel
-            r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-            r.publish(self.handle.organization.id, 'new')
+        self.send_redis_message(activity_action)
 
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'
@@ -132,3 +129,13 @@ class Tweet(models.Model):
         data = response.json()
 
         return data['id_str']
+
+    def send_redis_message(self, action):
+        r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+
+        if action == Action.CREATED:
+            message = 'new'
+        else:
+            message = self.id
+
+        r.publish(self.handle.organization.id, message)
