@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from requests_oauthlib import OAuth1
 
+import redis
 import requests
 
 from core.models import Action
@@ -101,13 +102,22 @@ class Tweet(models.Model):
             else:
                 activity_action = Action.EDITED
         else:
-            activity_action = Action.CREATED
+            if (self.status == Tweet.POSTED):
+                self.twitter_id = self.publish()
+                activity_action = Action.POSTED
+            else:
+                activity_action = Action.CREATED
         
         super(Tweet, self).save(*args, **kwargs)
 
         action = Action(action=activity_action,
             tweet=self)
         action.save()
+
+        if activity_action == Action.CREATED:
+            # Send a notification to redis for this org's channel
+            r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+            r.publish(self.handle.organization.id, 'new')
 
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'
@@ -120,4 +130,5 @@ class Tweet(models.Model):
         # TO-DO: Add some error handling here
         response = requests.post(url, auth=auth, params=payload)
         data = response.json()
+
         return data['id_str']

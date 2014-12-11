@@ -77,6 +77,9 @@ DATABASES = {
     }
 }
 
+REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR')
+REDIS_PORT = os.environ.get('REDIS_PORT_6379_TCP_PORT')
+
 AUTH_USER_MODEL = 'core.TweetCheckUser'
 
 # Internationalization
