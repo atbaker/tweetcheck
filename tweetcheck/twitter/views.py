@@ -17,14 +17,18 @@ class TweetViewSet(viewsets.ModelViewSet):
     model = Tweet
     permission_classes = (IsAuthenticated,IsApprover)
     serializer_class = TweetSerializer
-    paginate_by = 25
 
     def get_queryset(self):
         queryset = self.model.objects.filter(handle__organization=self.request.user.organization)
 
-        status = self.request.QUERY_PARAMS.get('status', None)
+        query_params = self.request.QUERY_PARAMS
+        status = query_params.get('status', None)
         if status is not None:
             queryset = queryset.filter(status=status)
+
+        since_id = query_params.get('since_id', None)
+        if since_id is not None:
+            queryset = queryset.filter(id__gt=since_id)
 
         return queryset
 
