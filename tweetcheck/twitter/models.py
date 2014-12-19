@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from requests_oauthlib import OAuth1
 
 import redis
 import requests
 
+from config import celery_app
 from core.models import Action
 from .tasks import publish_later
 
@@ -82,6 +85,8 @@ class Tweet(models.Model):
     body = models.CharField(max_length=250, validators=[validate_tweet_body])
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     eta = models.DateTimeField(blank=True, null=True)
+    task_id = models.CharField(max_length=50, blank=True, null=True)
+
     twitter_id = models.CharField(max_length=25, blank=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -96,27 +101,33 @@ class Tweet(models.Model):
         return '{0} - {1}'.format(self.id, self.body[:50])
 
     def save(self, *args, **kwargs):
+        # If we're just adding the task_id to this instance, skip this logic
+        if 'update_fields' in kwargs:
+            if 'task_id' in kwargs['update_fields']:
+                super(Tweet, self).save(*args, **kwargs)
+                return
+
         if self.pk is not None:
             original = Tweet.objects.get(pk=self.pk)
             if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
                 self.twitter_id = self.publish()
                 activity_action = Action.POSTED
+            elif (not original.status == Tweet.SCHEDULED) and self.status == Tweet.SCHEDULED:
+                activity_action = Action.SCHEDULED
             elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
                 activity_action = Action.REJECTED
             else:
                 activity_action = Action.EDITED
         else:
-            if (self.status == Tweet.POSTED):
+            if self.status == Tweet.POSTED:
                 self.twitter_id = self.publish()
                 activity_action = Action.POSTED
+            elif self.status == Tweet.SCHEDULED:
+                activity_action = Action.SCHEDULED
             else:
                 activity_action = Action.CREATED
         
         super(Tweet, self).save(*args, **kwargs)
-
-        if self.status == Tweet.SCHEDULED:
-            publish_later.delay(self.pk)
-            activity_action = Action.SCHEDULED
 
         action = Action(action=activity_action,
             tweet=self)
@@ -147,3 +158,21 @@ class Tweet(models.Model):
             message = self.id
 
         r.publish(self.handle.organization.id, message)
+
+@receiver(post_save, sender=Tweet)
+def update_scheduling(sender, instance, created, raw, using, update_fields, **kwargs):
+    # If this tweet has a tweet_id, it has already been published
+    # If task_id was in the update_fields, we don't need to process this signal again
+    if instance.twitter_id:
+        return
+    elif update_fields:
+        if 'task_id' in update_fields:
+            return
+
+    if instance.status == Tweet.SCHEDULED:
+        if instance.task_id:
+            celery_app.control.revoke(instance.task_id)
+
+        result = publish_later.apply_async(args=[instance.id], countdown=5)
+        instance.task_id = result.id
+        instance.save(update_fields=['task_id'])

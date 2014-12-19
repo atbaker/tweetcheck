@@ -134,3 +134,6 @@ REST_FRAMEWORK = {
 # Project-specific settings
 TWITTER_API_KEY = os.environ.get('TWITTER_API_KEY')
 TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')
+
+# Celery settings
+CELERY_TIMEZONE = 'America/New York'
