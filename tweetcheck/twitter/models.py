@@ -7,6 +7,7 @@ import redis
 import requests
 
 from core.models import Action
+from .tasks import publish_later
 
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)
@@ -68,11 +69,13 @@ class Tweet(models.Model):
     PENDING = 0
     POSTED = 1
     REJECTED = -1
+    SCHEDULED = 3
 
     STATUS_CHOICES = (
         (PENDING, 'pending'),
         (POSTED, 'posted'),
-        (REJECTED, 'rejected')
+        (REJECTED, 'rejected'),
+        (SCHEDULED, 'scheduled')
     )
 
     handle = models.ForeignKey(Handle)
@@ -110,6 +113,10 @@ class Tweet(models.Model):
                 activity_action = Action.CREATED
         
         super(Tweet, self).save(*args, **kwargs)
+
+        if self.status == Tweet.SCHEDULED:
+            publish_later.delay(self.pk)
+            activity_action = Action.SCHEDULED
 
         action = Action(action=activity_action,
             tweet=self)

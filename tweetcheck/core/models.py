@@ -85,12 +85,14 @@ class Action(models.Model):
     CREATED = 0
     POSTED = 1
     EDITED = 2
+    SCHEDULED = 3
 
     ACTION_CHOICES = (
         (REJECTED, 'rejected'),
         (CREATED, 'created'),
         (POSTED, 'posted'),
-        (EDITED, 'edited')
+        (EDITED, 'edited'),
+        (SCHEDULED, 'scheduled')
     )
 
     organization = models.ForeignKey(Organization)

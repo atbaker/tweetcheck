@@ -13,9 +13,22 @@ django:
   volumes:
     - .:/usr/src/app
 
+celery:
+  build: .
+  working_dir: "/usr/src/app/tweetcheck"
+  command: "celery -A config worker --loglevel=info"
+  links:
+    - db:postgres
+    - redis:redis
+  environment:
+    DJANGO_SETTINGS_MODULE:
+    C_FORCE_ROOT: "true"
+  volumes:
+    - .:/usr/src/app
+
 data:
   image: postgres:9.3
-  command: echo 'Data-only container'
+  command: echo "Data-only container"
 
 db:
   image: postgres:9.3
