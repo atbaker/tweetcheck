@@ -21,6 +21,8 @@ celery:
     - db:postgres
     - redis:redis
   environment:
+    TWITTER_API_KEY:
+    TWITTER_API_SECRET:
     DJANGO_SETTINGS_MODULE:
     C_FORCE_ROOT: "true"
   volumes:
