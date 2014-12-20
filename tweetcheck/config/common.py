@@ -117,8 +117,6 @@ MEDIA_ROOT = join(BASE_DIR, 'media')
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
-LOGIN_REDIRECT_URL = '/#/'
-
 # REST Framework
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
@@ -134,6 +132,3 @@ REST_FRAMEWORK = {
 # Project-specific settings
 TWITTER_API_KEY = os.environ.get('TWITTER_API_KEY')
 TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')
-
-# Celery settings
-CELERY_TIMEZONE = 'America/New York'

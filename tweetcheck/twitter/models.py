@@ -85,7 +85,6 @@ class Tweet(models.Model):
     body = models.CharField(max_length=250, validators=[validate_tweet_body])
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
     eta = models.DateTimeField(blank=True, null=True)
-    task_id = models.CharField(max_length=50, blank=True, null=True)
 
     twitter_id = models.CharField(max_length=25, blank=True)
 
@@ -101,31 +100,31 @@ class Tweet(models.Model):
         return '{0} - {1}'.format(self.id, self.body[:50])
 
     def save(self, *args, **kwargs):
-        # If we're just adding the task_id to this instance, skip this logic
-        if 'update_fields' in kwargs:
-            if 'task_id' in kwargs['update_fields']:
-                super(Tweet, self).save(*args, **kwargs)
-                return
+        from_scheduler = kwargs.pop('from_scheduler', False)
 
-        if self.pk is not None:
-            original = Tweet.objects.get(pk=self.pk)
-            if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
-                self.twitter_id = self.publish()
-                activity_action = Action.POSTED
-            elif (not original.status == Tweet.SCHEDULED) and self.status == Tweet.SCHEDULED:
-                activity_action = Action.SCHEDULED
-            elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
-                activity_action = Action.REJECTED
-            else:
-                activity_action = Action.EDITED
+        if from_scheduler:
+            self.status = Tweet.POSTED
+            activity_action = Action.POSTED
         else:
-            if self.status == Tweet.POSTED:
-                self.twitter_id = self.publish()
-                activity_action = Action.POSTED
-            elif self.status == Tweet.SCHEDULED:
-                activity_action = Action.SCHEDULED
+            if self.pk is not None:
+                original = Tweet.objects.get(pk=self.pk)
+                if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
+                    self.twitter_id = self.publish()
+                    activity_action = Action.POSTED
+                elif (not original.status == Tweet.SCHEDULED) and self.status == Tweet.SCHEDULED:
+                    activity_action = Action.SCHEDULED
+                elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
+                    activity_action = Action.REJECTED
+                else:
+                    activity_action = Action.EDITED
             else:
-                activity_action = Action.CREATED
+                if self.status == Tweet.POSTED:
+                    self.twitter_id = self.publish()
+                    activity_action = Action.POSTED
+                elif self.status == Tweet.SCHEDULED:
+                    activity_action = Action.SCHEDULED
+                else:
+                    activity_action = Action.CREATED
         
         super(Tweet, self).save(*args, **kwargs)
 
@@ -160,19 +159,13 @@ class Tweet(models.Model):
         r.publish(self.handle.organization.id, message)
 
 @receiver(post_save, sender=Tweet)
-def update_scheduling(sender, instance, created, raw, using, update_fields, **kwargs):
+def update_scheduling(sender, instance, **kwargs):
     # If this tweet has a tweet_id, it has already been published
-    # If task_id was in the update_fields, we don't need to process this signal again
-    if instance.twitter_id:
+    if instance.twitter_id or instance.status != Tweet.SCHEDULED:
         return
-    elif update_fields:
-        if 'task_id' in update_fields:
-            return
 
-    if instance.status == Tweet.SCHEDULED:
-        if instance.task_id:
-            celery_app.control.revoke(instance.task_id)
+    # Revoke a previous task if it was in the queue
+    if instance.task_id:
+        celery_app.control.revoke(instance.id)
 
-        result = publish_later.apply_async(args=[instance.id], countdown=5)
-        instance.task_id = result.id
-        instance.save(update_fields=['task_id'])
+    publish_later.apply_async(args=[instance.id], eta=instance.eta, task_id=instance.id)
