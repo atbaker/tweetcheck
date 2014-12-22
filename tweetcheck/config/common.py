@@ -119,7 +119,7 @@ MEDIA_URL = '/media/'
 
 # REST Framework
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10,
+    'PAGINATE_BY': None,
     'DATETIME_INPUT_FORMATS': ['iso-8601', '%m/%d/%Y %I:%M %p'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
