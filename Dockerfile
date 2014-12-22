@@ -4,8 +4,12 @@ FROM python:3.4
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app
+# Install requirements
+RUN mkdir /usr/src/app/requirements
+COPY ./requirements /usr/src/app/requirements
 RUN pip install -r requirements/local.txt
+
+COPY . /usr/src/app
 
 EXPOSE 8000
 
