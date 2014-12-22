@@ -94,7 +94,7 @@ class Tweet(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('created',)
+        ordering = ('eta',)
 
     def __str__(self):
         return '{0} - {1}'.format(self.id, self.body[:50])
