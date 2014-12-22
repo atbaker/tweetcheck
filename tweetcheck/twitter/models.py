@@ -164,8 +164,4 @@ def update_scheduling(sender, instance, **kwargs):
     if instance.twitter_id or instance.status != Tweet.SCHEDULED:
         return
 
-    # Revoke a previous task if it was in the queue
-    if instance.task_id:
-        celery_app.control.revoke(instance.id)
-
-    publish_later.apply_async(args=[instance.id], eta=instance.eta, task_id=instance.id)
+    publish_later.apply_async(args=[instance.id], eta=instance.eta)
