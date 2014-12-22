@@ -14,7 +14,7 @@ django:
     - .:/usr/src/app
 
 celery:
-  build: .
+  image: tweetcheck_django:latest
   working_dir: "/usr/src/app/tweetcheck"
   command: "celery -A config worker --loglevel=info"
   links:
