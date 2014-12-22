@@ -10,7 +10,7 @@ import requests
 
 from config import celery_app
 from core.models import Action
-from .tasks import publish_later
+from .tasks import publish_later, check_eta
 
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)
@@ -128,10 +128,12 @@ class Tweet(models.Model):
         
         super(Tweet, self).save(*args, **kwargs)
 
+        # Save an action for this update
         action = Action(action=activity_action,
             tweet=self)
         action.save()
 
+        # Send a redis message that a tweet has changed
         self.send_redis_message(activity_action)
 
     def publish(self):
@@ -165,3 +167,8 @@ def update_scheduling(sender, instance, **kwargs):
         return
 
     publish_later.apply_async(args=[instance.id], eta=instance.eta)
+
+@receiver(post_save, sender=Tweet)
+def set_eta_check(sender, instance, **kwargs):
+    if instance.status == Tweet.PENDING and instance.eta:
+        check_eta.apply_async(args=[instance.id], eta=instance.eta)

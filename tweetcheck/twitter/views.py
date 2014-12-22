@@ -21,7 +21,7 @@ class TweetViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.model.objects.filter(handle__organization=self.request.user.organization)\
-            .annotate(null_eta=Count('eta')).order_by('null_eta', 'eta')
+            .annotate(null_eta=Count('eta')).order_by('null_eta', 'eta', 'created')
 
         query_params = self.request.QUERY_PARAMS
         status = query_params.get('status', None)
