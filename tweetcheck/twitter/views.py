@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth1Session
@@ -19,7 +20,8 @@ class TweetViewSet(viewsets.ModelViewSet):
     serializer_class = TweetSerializer
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(handle__organization=self.request.user.organization)
+        queryset = self.model.objects.filter(handle__organization=self.request.user.organization)\
+            .annotate(null_eta=Count('eta')).order_by('null_eta', 'eta')
 
         query_params = self.request.QUERY_PARAMS
         status = query_params.get('status', None)
