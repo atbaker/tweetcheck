@@ -23,6 +23,7 @@ class UserViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
 class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = Action
     serializer_class = ActionSerializer
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super(ActionViewSet, self).get_queryset()
