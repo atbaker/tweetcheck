@@ -20,7 +20,6 @@ urlpatterns = patterns('',
     url(r'^auth/request$', 'twitter.views.get_request_token'),
     url(r'^auth/callback$', 'twitter.views.callback'),
 
-    # Not sure if I need api-auth
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
