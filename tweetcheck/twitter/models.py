@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -8,7 +9,6 @@ from requests_oauthlib import OAuth1
 import redis
 import requests
 
-from config import celery_app
 from core.models import Action
 from .tasks import publish_later, check_eta
 
@@ -89,9 +89,9 @@ class Tweet(models.Model):
     twitter_id = models.CharField(max_length=25, blank=True)
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(editable=False)
     last_editor = models.ForeignKey(settings.AUTH_USER_MODEL, related_name=u'+')
-    last_modified = models.DateTimeField(auto_now=True)
+    last_modified = models.DateTimeField(editable=False)
 
     class Meta:
         ordering = ('created',)
@@ -101,6 +101,7 @@ class Tweet(models.Model):
 
     def save(self, *args, **kwargs):
         from_scheduler = kwargs.pop('from_scheduler', False)
+        current_datetime = datetime.now()
 
         if from_scheduler:
             self.status = Tweet.POSTED
@@ -132,7 +133,10 @@ class Tweet(models.Model):
                     activity_action = Action.SCHEDULED
                 else:
                     activity_action = Action.CREATED
-        
+
+                self.created = current_datetime
+
+        self.last_modified = current_datetime
         super(Tweet, self).save(*args, **kwargs)
 
         # Save an action for this update
