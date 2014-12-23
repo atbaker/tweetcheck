@@ -15,7 +15,7 @@ class Organization(models.Model):
         return '{0}'.format(self.name)
 
 class TweetUserManager(BaseUserManager):
-    def create_user(self, email, password, organization=None):
+    def create_user(self, email, password, is_approver=False, organization=None):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -25,6 +25,7 @@ class TweetUserManager(BaseUserManager):
         )
 
         user.set_password(password)
+        user.is_approver = is_approver
         user.save(using=self._db)
         return user
 
@@ -34,6 +35,7 @@ class TweetUserManager(BaseUserManager):
             organization=organization
         )
         user.is_admin = True
+        user.is_approver = True
         user.save(using=self._db)
         return user
 
