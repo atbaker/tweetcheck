@@ -9,7 +9,7 @@ from requests_oauthlib import OAuth1
 import redis
 import requests
 
-from core.models import Action
+from core.models import TweetCheckUser, Action
 from .tasks import publish_later, check_eta
 
 class Handle(models.Model):
@@ -105,6 +105,7 @@ class Tweet(models.Model):
 
         if from_scheduler:
             self.status = Tweet.POSTED
+            self.last_editor = TweetCheckUser.objects.get(email='scheduler@tweetcheck.com')
             activity_action = Action.POSTED
         else:
             if self.pk is not None:
