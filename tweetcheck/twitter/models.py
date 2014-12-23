@@ -117,6 +117,13 @@ class Tweet(models.Model):
                     activity_action = Action.REJECTED
                 else:
                     activity_action = Action.EDITED
+
+                # If this tweet was already scheduled and its ETA has NOT changed,
+                # note it in a special property so we can avoid duplicate celery tasks
+                if original.status == Tweet.SCHEDULED and self.status == Tweet.SCHEDULED \
+                and original.eta == self.eta:
+                    self.eta_not_updated = True
+
             else:
                 if self.status == Tweet.POSTED:
                     self.twitter_id = self.publish()
@@ -166,7 +173,12 @@ def update_scheduling(sender, instance, **kwargs):
     if instance.twitter_id or instance.status != Tweet.SCHEDULED:
         return
 
-    publish_later.apply_async(args=[instance.id], eta=instance.eta)
+    # Check if the ETA hasn't been updated since this tweet was last saved
+    eta_not_updated = getattr(instance, 'eta_not_updated', False)
+
+    # If the ETA wasn't updated, don't schedule another (redundant) task
+    if not eta_not_updated:
+        publish_later.apply_async(args=[instance.id], eta=instance.eta)
 
 @receiver(post_save, sender=Tweet)
 def set_eta_check(sender, instance, **kwargs):

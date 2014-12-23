@@ -12,10 +12,11 @@ def publish_later(self, tweet_id):
     tweet_eta = arrow.get(tweet.eta)
     task_eta = arrow.get(self.request.eta)
 
-    # Don't publish if the Tweet has been published
-    # or its scheduled time has changed since
-    # this task was submitted
-    if tweet.twitter_id or tweet_eta != task_eta:
+    # Don't publish if:
+    # - The Tweet has been published already
+    # - Its scheduled time has changed since this task was submitted
+    # - its status has changed
+    if tweet.twitter_id or tweet_eta != task_eta or tweet.status != Tweet.SCHEDULED:
       return
 
     tweet.twitter_id = tweet.publish()
