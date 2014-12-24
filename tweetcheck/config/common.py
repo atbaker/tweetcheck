@@ -122,8 +122,8 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': None,
     'DATETIME_INPUT_FORMATS': ['iso-8601', '%m/%d/%Y %I:%M %p'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
