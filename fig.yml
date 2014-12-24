@@ -10,6 +10,7 @@ django:
     TWITTER_API_KEY:
     TWITTER_API_SECRET:
     DJANGO_SETTINGS_MODULE:
+    DJANGO_SECRET_KEY:
   volumes:
     - .:/usr/src/app
 
@@ -24,6 +25,7 @@ celery:
     TWITTER_API_KEY:
     TWITTER_API_SECRET:
     DJANGO_SETTINGS_MODULE:
+    DJANGO_SECRET_KEY:
     C_FORCE_ROOT: "true"
   volumes:
     - .:/usr/src/app
