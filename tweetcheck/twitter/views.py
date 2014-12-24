@@ -4,9 +4,11 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from requests_oauthlib import OAuth1Session
 from rest_framework import viewsets
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 
 import json
+import urllib.parse
 
 from .models import Tweet, Handle
 from .permissions import IsApprover
@@ -54,7 +56,7 @@ def get_request_token(request):
     request.session['resource_owner_secret'] = fetch_response.get('oauth_token_secret')
 
     base_authorization_url = 'https://api.twitter.com/oauth/authorize'
-    authorization_url = oauth.authorization_url(base_authorization_url)
+    authorization_url = oauth.authorization_url(base_authorization_url, force_login='true')
 
     return HttpResponse(json.dumps({'authorizationUrl': authorization_url}))
 
@@ -79,13 +81,16 @@ def callback(request):
     resource_owner_secret = oauth_tokens.get('oauth_token_secret')
     screen_name = oauth_tokens.get('screen_name')
 
+    user_token_key = urllib.parse.unquote(request.COOKIES['token']).strip('"')
+    user_token = Token.objects.get(key=user_token_key)
+
     Handle.objects.update_or_create(
         screen_name=screen_name,
         defaults={
-            'organization': request.user.organization,
+            'organization': user_token.user.organization,
             'access_token': resource_owner_key,
             'token_secret': resource_owner_secret
         }
     )
 
-    return redirect('/')
+    return redirect('/dashboard/review')
