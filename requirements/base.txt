@@ -3,6 +3,7 @@
 arrow==0.4.4
 celery==3.1.17
 Django==1.7
+django-cors-headers==1.0.0
 djangorestframework==3.0.0
 dj-static==0.0.6
 gunicorn==19.1.1
