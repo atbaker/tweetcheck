@@ -38,12 +38,12 @@ redis:
   image: redis:2.8
 
 node:
-  build: atbaker/tweetcheck-node
+  image: atbaker/tweetcheck-node
   links:
     - redis:redis
 
 nginx:
-  build: atbaker/tweetcheck-angular
+  image: atbaker/tweetcheck-angular
   ports:
     - "80:80"
   links:
