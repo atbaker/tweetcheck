@@ -107,7 +107,6 @@ TEMPLATE_DIRS = (
 STATIC_ROOT = join(os.path.dirname(BASE_DIR), 'staticfiles')
 
 STATICFILES_DIRS = (
-    join(BASE_DIR, 'static'),
 )
 
 STATIC_URL = '/static/'
