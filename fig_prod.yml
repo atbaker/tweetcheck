@@ -1,0 +1,51 @@
+# Production Fig configuration file for Hypermasher
+
+django:
+  image: atbaker/tweetcheck
+  links:
+    - db:postgres
+    - redis:redis
+  environment:
+    TWITTER_API_KEY:
+    TWITTER_API_SECRET:
+    DJANGO_SETTINGS_MODULE:
+    DJANGO_SECRET_KEY:
+
+celery:
+  image: atbaker/tweetcheck
+  working_dir: "/usr/src/app/tweetcheck"
+  command: "celery -A config worker --loglevel=info"
+  links:
+    - db:postgres
+    - redis:redis
+  environment:
+    TWITTER_API_KEY:
+    TWITTER_API_SECRET:
+    DJANGO_SETTINGS_MODULE:
+    DJANGO_SECRET_KEY:
+    C_FORCE_ROOT: "true"
+
+data:
+  image: postgres:9.3
+  command: echo "Data-only container"
+
+db:
+  image: postgres:9.3
+  volumes_from:
+    - data
+
+redis:
+  image: redis:2.8
+
+node:
+  build: atbaker/tweetcheck-node
+  links:
+    - redis:redis
+
+nginx:
+  build: atbaker/tweetcheck-angular
+  ports:
+    - "80:80"
+  links:
+    - django:gunicorn
+    - node:node
