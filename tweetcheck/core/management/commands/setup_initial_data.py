@@ -14,17 +14,26 @@ class Command(BaseCommand):
 
         # Create admin superuser
         try:
-            admin = TweetCheckUser.objects.get(email='andrew.tork.baker@gmail.com')
+            TweetCheckUser.objects.get(email='andrew.tork.baker@gmail.com')
         except TweetCheckUser.DoesNotExist:
-            admin = TweetCheckUser.objects.create_superuser(email='andrew.tork.baker@gmail.com',
+            TweetCheckUser.objects.create_superuser(email='andrew.tork.baker@gmail.com',
                 password='g',
                 organization=org)
 
         # Create scheduler user
         try:
-            scheduler = TweetCheckUser.objects.get(email='scheduler@tweetcheck.com')
+            TweetCheckUser.objects.get(email='scheduler@tweetcheck.com')
         except TweetCheckUser.DoesNotExist:
-            scheduler = TweetCheckUser.objects.create_superuser(email='scheduler@tweetcheck.com',
+            TweetCheckUser.objects.create_superuser(email='scheduler@tweetcheck.com',
                 password='s')
 
-        self.stdout.write('Test Org, admin, and scheduler created')
+        # Create test nonapprover
+        try:
+            TweetCheckUser.objects.get(email='nonapprover@tweetcheck.com')
+        except TweetCheckUser.DoesNotExist:
+            TweetCheckUser.objects.create_user(email='nonapprover@tweetcheck.com',
+                password='n',
+                is_approver=False,
+                organization=org)
+
+        self.stdout.write('Test Org, admin, scheduler, and nonapprover created')
