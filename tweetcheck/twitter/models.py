@@ -10,7 +10,9 @@ import redis
 import requests
 
 from core.models import TweetCheckUser, Action
-from .tasks import publish_later, check_eta
+from .tasks import publish_later, check_eta, publish_counts
+
+r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)
@@ -148,6 +150,11 @@ class Tweet(models.Model):
         # Send a redis message that a tweet has changed
         self.send_redis_message(activity_action)
 
+        # If the action was anything except edited, update all clients'
+        # badge counts asynchronously
+        if activity_action != Action.EDITED:
+            publish_counts.apply_async(args=[self.handle.organization.id])
+
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'
         auth = OAuth1(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET,
@@ -163,8 +170,6 @@ class Tweet(models.Model):
         return data['id_str']
 
     def send_redis_message(self, action):
-        r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
-
         if action == Action.CREATED:
             message = 'new'
         else:
@@ -181,7 +186,7 @@ def update_scheduling(sender, instance, **kwargs):
     # Check if the ETA hasn't been updated since this tweet was last saved
     eta_not_updated = getattr(instance, 'eta_not_updated', False)
 
-    # If the ETA wasn't updated, don't schedule another (redundant) task
+    # If the ETA wasn't updated, don't schedule another, redundant, task
     if not eta_not_updated:
         publish_later.apply_async(args=[instance.id], eta=instance.eta)
 
