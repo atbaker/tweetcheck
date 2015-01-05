@@ -46,10 +46,7 @@ def publish_counts(org_id):
     """Publishes the latest counts of pending and scheduled tweets to redis"""
     from .models import Tweet
 
-    org_tweets = Tweet.objects.filter(handle__organization__id=org_id)
+    counts = Tweet.get_counts(org_id)
 
-    pending = org_tweets.filter(status=Tweet.PENDING).count()
-    r.publish('{0}-pending'.format(org_id), pending)
-
-    scheduled = org_tweets.filter(status=Tweet.SCHEDULED).count()
-    r.publish('{0}-scheduled'.format(org_id), scheduled)
+    r.publish('{0}-pending'.format(org_id), counts['pending'])
+    r.publish('{0}-scheduled'.format(org_id), counts['scheduled'])

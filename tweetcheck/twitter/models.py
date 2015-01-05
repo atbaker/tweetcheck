@@ -155,6 +155,17 @@ class Tweet(models.Model):
         if activity_action != Action.EDITED:
             publish_counts.apply_async(args=[self.handle.organization.id])
 
+    @classmethod
+    def get_counts(cls, org_id):
+        counts = {}
+
+        org_tweets = cls.objects.filter(handle__organization__id=org_id)
+
+        counts['pending'] = org_tweets.filter(status=Tweet.PENDING).count()
+        counts['scheduled'] = org_tweets.filter(status=Tweet.SCHEDULED).count()
+
+        return counts
+
     def publish(self):
         url = 'https://api.twitter.com/1.1/statuses/update.json'
         auth = OAuth1(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET,

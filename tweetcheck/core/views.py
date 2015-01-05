@@ -5,7 +5,10 @@ from .serializers import UserSerializer, ActionSerializer
 
 class OrganizationQuerysetMixin(object):
     def get_queryset(self):
-        return self.model.objects.filter(organization=self.request.user.organization)
+        if self.model.__name__ == 'Tweet':
+            return self.model.objects.filter(handle__organization=self.request.user.organization)
+        else:
+            return self.model.objects.filter(organization=self.request.user.organization)
 
 class UserViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = TweetCheckUser

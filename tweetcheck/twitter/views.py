@@ -6,6 +6,8 @@ from requests_oauthlib import OAuth1Session
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 import json
 import urllib.parse
@@ -16,14 +18,14 @@ from .serializers import TweetSerializer, HandleSerializer
 from core.views import OrganizationQuerysetMixin
 
 
-class TweetViewSet(viewsets.ModelViewSet):
+class TweetViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = Tweet
     permission_classes = (IsAuthenticated,IsApprover)
     serializer_class = TweetSerializer
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(handle__organization=self.request.user.organization)\
-            .annotate(null_eta=Count('eta')).order_by('null_eta', 'eta', 'created')
+        queryset = super(TweetViewSet, self).get_queryset()
+        queryset.annotate(null_eta=Count('eta')).order_by('null_eta', 'eta', 'created')
 
         query_params = self.request.QUERY_PARAMS
         status = query_params.get('status', None)
@@ -45,6 +47,11 @@ class TweetViewSet(viewsets.ModelViewSet):
 class HandleViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = Handle
     serializer_class = HandleSerializer
+
+class ListCounts(APIView):
+    def get(self, request, format=None):
+        counts = Tweet.get_counts(self.request.user.organization.id)
+        return Response(counts)
 
 def get_request_token(request):
     request_token_url = 'https://api.twitter.com/oauth/request_token'
