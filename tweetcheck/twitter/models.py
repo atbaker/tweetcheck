@@ -42,7 +42,7 @@ class Handle(models.Model):
 
         self.user_id = details['id']
         self.name = details['name']
-        self.profile_image_url = details['profile_image_url']
+        self.profile_image_url = details['profile_image_url_https']
 
     def save(self, *args, **kwargs):
         self.update_details()
