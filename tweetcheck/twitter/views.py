@@ -61,7 +61,6 @@ def get_request_token(request):
     return HttpResponse(json.dumps({'authorizationUrl': authorization_url}))
 
 def callback(request):
-    # http://www.tweetcheck.com/callback?oauth_token=oxS47MU7v40oP3hWdGEBFw8KBe8yAOxk&oauth_verifier=QfF3IavGlsFYrwpkQxHG0CxlCIAdZqvj
     oauth = OAuth1Session(settings.TWITTER_API_KEY, client_secret=settings.TWITTER_API_SECRET)
     oauth_response = oauth.parse_authorization_response(request.get_full_path())
     verifier = oauth_response.get('oauth_verifier')
