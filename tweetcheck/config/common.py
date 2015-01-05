@@ -79,6 +79,8 @@ DATABASES = {
     }
 }
 
+# Redis
+
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR')
 REDIS_PORT = os.environ.get('REDIS_PORT_6379_TCP_PORT')
 
