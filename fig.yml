@@ -53,9 +53,10 @@ nginx:
   build: ../tweetcheck-angular
   volumes:
     - ../tweetcheck-angular:/usr/share/nginx/html
-    - ../tweetcheck-angular/nginx.conf:/etc/nginx/nginx.conf
+    - ../tweetcheck-angular/conf/nginx.conf:/etc/nginx/nginx.conf
   ports:
     - "8000:80"
+    - "8001:443"
   links:
     - django:gunicorn
     - node:node

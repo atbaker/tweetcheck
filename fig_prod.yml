@@ -46,6 +46,7 @@ nginx:
   image: atbaker/tweetcheck-angular
   ports:
     - "80:80"
+    - "443:443"
   links:
     - django:gunicorn
     - node:node
