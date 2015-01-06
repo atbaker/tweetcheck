@@ -1,6 +1,7 @@
 # Base requirements
 
 arrow==0.4.4
+boto==2.34.0
 celery==3.1.17
 Django==1.7
 django-cors-headers==1.0.0
