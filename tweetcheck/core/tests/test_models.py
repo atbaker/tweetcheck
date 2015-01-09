@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.utils import timezone
 from model_mommy import mommy
 from unittest.mock import patch
 
