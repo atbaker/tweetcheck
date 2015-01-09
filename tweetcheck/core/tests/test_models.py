@@ -1,0 +1,80 @@
+from django.test import TestCase
+from django.utils import timezone
+from model_mommy import mommy
+from unittest.mock import patch
+
+from core.models import Organization, TweetCheckUser, Action
+from twitter.models import Tweet, Handle
+
+class OrganizationTest(TestCase):
+
+    def test_str(self):
+        organization = mommy.make(Organization)
+        self.assertEqual(str(organization), str(organization.name))
+
+
+class TweetCheckUserTest(TestCase):
+
+    def test_create_user(self):
+        user = TweetCheckUser.objects.create_user(
+          email='test@example.com',
+          password='test')
+
+        self.assertIsInstance(user, TweetCheckUser)
+
+    def test_create_user_without_email(self):
+        with self.assertRaises(ValueError):
+            TweetCheckUser.objects.create_user(email='', password='')
+
+    def test_create_superuser(self):
+        user = TweetCheckUser.objects.create_superuser(
+          email='test@example.com',
+          password='test')
+
+        self.assertIsInstance(user, TweetCheckUser)
+
+    def test_get_full_name(self):
+        user = mommy.make(TweetCheckUser)
+        self.assertEqual(user.get_full_name(), user.email)
+
+    def test_get_short_name(self):
+        user = mommy.make(TweetCheckUser)
+        self.assertEqual(user.get_short_name(), user.email.split('@')[0])
+
+    def test_str(self):
+        user = mommy.make(TweetCheckUser)
+        self.assertEqual(str(user), str(user.email))
+
+    def test_permissions(self):
+        user = mommy.make(TweetCheckUser)
+
+        self.assertTrue(user.has_perm('test perm'))
+        self.assertTrue(user.has_module_perms('test perm'))
+
+    def test_is_staff(self):
+        user = mommy.make(TweetCheckUser, is_admin=True)
+        self.assertTrue(user.is_staff)
+
+
+class ActionTest(TestCase):
+
+    def test_str(self):
+        with patch.object(Handle, 'update_details'):
+            organization = mommy.make(Organization)
+            handle = mommy.make(Handle, organization=organization)
+            tweet = mommy.make(Tweet, handle=handle)
+
+        action = mommy.make(Action, tweet=tweet)
+        self.assertEqual(str(action), '#{0} "{1}"'.format(action.id, action.body[:50]))
+
+    def test_save(self):
+        with patch.object(Handle, 'update_details'):
+            organization = mommy.make(Organization)
+            handle = mommy.make(Handle, organization=organization)
+            tweet = mommy.make(Tweet, handle=handle)
+
+        action = Action.objects.create(action=Action.CREATED, tweet=tweet)
+
+        self.assertEqual(action.organization, organization)
+        self.assertEqual(action.actor, tweet.last_editor)
+        self.assertEqual(action.body, tweet.body)
