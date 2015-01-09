@@ -3,7 +3,6 @@ Local Configurations
 
 - Runs in Debug mode
 - Uses console backend for emails
-- Use Django Debug Toolbar
 '''
 from .common import *
 
