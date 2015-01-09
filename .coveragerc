@@ -1,6 +1,5 @@
 # Coverage configuration file
 
 [run]
-branch = True
 omit = 
   */migrations/*
