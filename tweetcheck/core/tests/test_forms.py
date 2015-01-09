@@ -3,7 +3,7 @@ from django.test import TestCase
 from model_mommy import mommy
 from unittest.mock import patch
 
-from core.models import Organization, TweetCheckUser, Action
+from core.models import TweetCheckUser
 from core.forms import UserCreationForm, UserChangeForm
 
 class UserCreationFormTest(TestCase):
