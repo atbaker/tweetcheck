@@ -4,7 +4,7 @@ from django.conf import settings
 import arrow
 import redis
 
-r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
 
 @shared_task(bind=True)
 def publish_later(self, tweet_id):

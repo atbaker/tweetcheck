@@ -12,7 +12,7 @@ import requests
 from core.models import TweetCheckUser, Action
 from .tasks import publish_later, check_eta, publish_counts
 
-r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
 
 class Handle(models.Model):
     screen_name = models.CharField(max_length=50)

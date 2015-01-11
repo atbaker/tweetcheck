@@ -10,6 +10,9 @@ TEMPLATE_DEBUG = True
 # Timezone
 USE_TZ = False
 
+# Redis
+REDIS_DB = 9
+
 # Celery
 CELERY_ALWAYS_EAGER = True
 
