@@ -90,6 +90,66 @@ class TweetTest(TestCase):
 
         self.assertIsNone(tweet.clean_fields())
 
+    def test_publish(self):
+        from requests import Response
+        json_response = {'id_str': '123321'}
+
+        with patch.object(Response, 'json', return_value=json_response):
+            tweet_id = self.existing_tweet.publish()
+
+        self.assertEqual(tweet_id, '123321')
+
+    def test_send_redis_message_created(self):
+        from redis import StrictRedis
+
+        with patch.object(StrictRedis, 'publish') as mock:
+            self.existing_tweet.send_redis_message(Action.CREATED)
+
+        mock.assert_called_once_with(self.existing_tweet.handle.organization.id, 'new')
+
+    def test_update_scheduling_not_scheduled(self):
+        self.assertIsNone(update_scheduling(Tweet, self.existing_tweet))
+
+    def test_update_scheduling_same_eta(self):
+        tweet = mommy.make(Tweet, status=Tweet.SCHEDULED, handle=self.handle)
+        tweet.eta_not_updated = True
+
+        with patch('twitter.tasks.publish_later.apply_async') as mock:
+            update_scheduling(Tweet, tweet)
+
+        self.assertFalse(mock.called)
+
+    def test_update_scheduling_different_eta(self):
+        tweet = mommy.make(Tweet, status=Tweet.SCHEDULED, handle=self.handle)
+
+        with patch('twitter.tasks.publish_later.apply_async') as mock:
+            update_scheduling(Tweet, tweet)
+
+        self.assertEqual(mock.call_count, 1)
+
+    def test_set_eta_check_no_eta(self):
+        with patch('twitter.tasks.check_eta.apply_async') as mock:
+            set_eta_check(Tweet, self.existing_tweet)
+
+        self.assertFalse(mock.called)
+
+    def test_set_eta_check_valid(self):
+        from django.utils import timezone
+        self.existing_tweet.eta = timezone.now()
+
+        with patch('twitter.tasks.check_eta.apply_async') as mock:
+            set_eta_check(Tweet, self.existing_tweet)
+
+        self.assertEqual(mock.call_count, 1)
+
+    def test_get_counts(self):
+        mommy.make(Tweet, status=Tweet.SCHEDULED, handle=self.handle)
+
+        counts = Tweet.get_counts(self.handle.organization.id)
+
+        self.assertEqual(counts['scheduled'], 1)
+        self.assertEqual(counts['pending'], 1)
+
     # Save method tests
 
     def test_save_new_created(self):
@@ -171,58 +231,6 @@ class TweetTest(TestCase):
     def test_save_redis_message(self):
         with patch.object(Tweet, 'send_redis_message') as mock:
             mommy.make(Tweet, handle=self.handle)
-
-        self.assertEqual(mock.call_count, 1)
-
-    def test_publish(self):
-        from requests import Response
-        json_response = {'id_str': '123321'}
-        
-        with patch.object(Response, 'json', return_value=json_response):
-            tweet_id = self.existing_tweet.publish()
-
-        self.assertEqual(tweet_id, '123321')
-
-    def test_send_redis_message_created(self):
-        from redis import StrictRedis
-
-        with patch.object(StrictRedis, 'publish') as mock:
-            self.existing_tweet.send_redis_message(Action.CREATED)
-
-        mock.assert_called_once_with(self.existing_tweet.handle.organization.id, 'new')
-
-    def test_update_scheduling_not_scheduled(self):
-        self.assertIsNone(update_scheduling(Tweet, self.existing_tweet))
-
-    def test_update_scheduling_same_eta(self):
-        tweet = mommy.make(Tweet, status=Tweet.SCHEDULED, handle=self.handle)
-        tweet.eta_not_updated = True
-
-        with patch('twitter.tasks.publish_later.apply_async') as mock:
-            update_scheduling(Tweet, tweet)
-
-        self.assertFalse(mock.called)
-
-    def test_update_scheduling_different_eta(self):
-        tweet = mommy.make(Tweet, status=Tweet.SCHEDULED, handle=self.handle)
-
-        with patch('twitter.tasks.publish_later.apply_async') as mock:
-            update_scheduling(Tweet, tweet)
-
-        self.assertEqual(mock.call_count, 1)
-
-    def test_set_eta_check_no_eta(self):
-        with patch('twitter.tasks.check_eta.apply_async') as mock:
-            set_eta_check(Tweet, self.existing_tweet)
-
-        self.assertFalse(mock.called)
-
-    def test_set_eta_check_valid(self):
-        from django.utils import timezone
-        self.existing_tweet.eta = timezone.now()
-
-        with patch('twitter.tasks.check_eta.apply_async') as mock:
-            set_eta_check(Tweet, self.existing_tweet)
 
         self.assertEqual(mock.call_count, 1)
 
