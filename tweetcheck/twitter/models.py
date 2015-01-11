@@ -112,12 +112,12 @@ class Tweet(models.Model):
         else:
             if self.pk is not None:
                 original = Tweet.objects.get(pk=self.pk)
-                if (not original.status == Tweet.POSTED) and self.status == Tweet.POSTED:
+                if original.status != Tweet.POSTED and self.status == Tweet.POSTED:
                     self.twitter_id = self.publish()
                     activity_action = Action.POSTED
-                elif (not original.status == Tweet.SCHEDULED) and self.status == Tweet.SCHEDULED:
+                elif original.status != Tweet.SCHEDULED and self.status == Tweet.SCHEDULED:
                     activity_action = Action.SCHEDULED
-                elif (not original.status == Tweet.REJECTED) and self.status == Tweet.REJECTED:
+                elif original.status != Tweet.REJECTED and self.status == Tweet.REJECTED:
                     activity_action = Action.REJECTED
                 else:
                     activity_action = Action.EDITED
