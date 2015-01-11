@@ -3,3 +3,4 @@
 [run]
 omit = 
   */migrations/*
+  */tests/*
