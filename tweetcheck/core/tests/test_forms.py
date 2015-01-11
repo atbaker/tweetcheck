@@ -4,6 +4,9 @@ from model_mommy import mommy
 from core.models import TweetCheckUser
 from core.forms import UserCreationForm, UserChangeForm
 
+def tearDownModule():
+    TweetCheckUser.objects.all().delete()
+
 class UserCreationFormTest(TestCase):
 
     def test_password_mismatch(self):

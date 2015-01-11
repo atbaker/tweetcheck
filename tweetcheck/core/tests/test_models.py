@@ -5,6 +5,16 @@ from unittest.mock import patch
 from core.models import Organization, TweetCheckUser, Action
 from twitter.models import Tweet, Handle
 
+def tearDownModule():
+    # Core models
+    Organization.objects.all().delete()
+    TweetCheckUser.objects.all().delete()
+    Action.objects.all().delete()
+
+    # Tweet models
+    Handle.objects.all().delete()
+    Tweet.objects.all().delete()
+
 class OrganizationTest(TestCase):
 
     def test_str(self):
