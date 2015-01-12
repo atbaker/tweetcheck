@@ -12,6 +12,7 @@ psycopg2==2.5.4
 redis==2.10.3
 requests==2.4.3
 requests-oauthlib==0.4.2
+responses==0.3.0
 
 # Testing requirements
 coverage==3.7.1

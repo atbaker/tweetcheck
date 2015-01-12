@@ -3,6 +3,8 @@ from django.test import TestCase
 from model_mommy import mommy
 from unittest.mock import patch
 
+import responses
+
 from core.models import Organization, TweetCheckUser, Action
 from twitter.models import Tweet, Handle, update_scheduling, set_eta_check
 
@@ -32,11 +34,14 @@ class HandleTest(TestCase):
 
         self.assertEqual(str(handle), '{0} (@{1})'.format(handle.name, handle.screen_name))
 
+    @responses.activate
     def test_update_details(self):
-        from requests import Response
-        json_response = {'id': 1, 'name': 'Test', 'profile_image_url_https': 'https://foo.com'}
-        with patch.object(Response, 'json', return_value=json_response):
-            handle = mommy.make(Handle)
+        responses.add(responses.GET, 'https://api.twitter.com/1.1/users/show.json',
+            body='{"id": 1, "name": "Test", "profile_image_url_https": "https://foo.com"}',
+            status=200,
+            content_type='application/json')
+
+        handle = mommy.make(Handle)
 
         self.assertEqual(handle.user_id, 1)
         self.assertEqual(handle.name, 'Test')
@@ -233,6 +238,3 @@ class TweetTest(TestCase):
             mommy.make(Tweet, handle=self.handle)
 
         self.assertEqual(mock.call_count, 1)
-
-
-
