@@ -1,3 +1,4 @@
+from boto import sns
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
@@ -13,6 +14,7 @@ class Organization(models.Model):
 
     def __str__(self):
         return '{0}'.format(self.name)
+
 
 class TweetUserManager(BaseUserManager):
     def create_user(self, email, password, is_approver=False, organization=None):
@@ -38,6 +40,7 @@ class TweetUserManager(BaseUserManager):
         user.is_approver = True
         user.save(using=self._db)
         return user
+
 
 class TweetCheckUser(AbstractBaseUser):
     email = models.EmailField(
@@ -81,6 +84,24 @@ class TweetCheckUser(AbstractBaseUser):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class Device(models.Model):
+    token = models.CharField(max_length=64)
+    arn = models.CharField(max_length=150, blank=True)
+    user = models.ForeignKey(TweetCheckUser)
+
+    def __str__(self):
+        return '{0} - {1}'.format(self.user, self.arn)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            conn = sns.connect_to_region('us-east-1')
+            response = conn.create_platform_endpoint(settings.APNS_ARN, self.token)
+            self.arn = response['CreatePlatformEndpointResponse']['CreatePlatformEndpointResult']['EndpointArn']
+
+        super(Device, self).save(*args, **kwargs)
+
 
 class Action(models.Model):
     REJECTED = -1

@@ -10,6 +10,8 @@ django:
     TWITTER_API_SECRET:
     DJANGO_SETTINGS_MODULE:
     DJANGO_SECRET_KEY:
+    AWS_ACCESS_KEY_ID:
+    AWS_SECRET_ACCESS_KEY:
 
 celery:
   image: atbaker/tweetcheck
@@ -19,11 +21,13 @@ celery:
     - db:postgres
     - redis:redis
   environment:
+    C_FORCE_ROOT: "true"
     TWITTER_API_KEY:
     TWITTER_API_SECRET:
     DJANGO_SETTINGS_MODULE:
     DJANGO_SECRET_KEY:
-    C_FORCE_ROOT: "true"
+    AWS_ACCESS_KEY_ID:
+    AWS_SECRET_ACCESS_KEY:
 
 data:
   image: postgres:9.3

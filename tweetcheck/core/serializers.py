@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TweetCheckUser, Action
+from .models import TweetCheckUser, Device, Action
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,6 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TweetCheckUser
         fields = ('id', 'email', 'email_without_domain', 'organization', 'is_approver')
+
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Device
+        fields = ('token', 'user')
 
 class ActionSerializer(serializers.ModelSerializer):
     actor = serializers.CharField(source='actor.get_short_name')

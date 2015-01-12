@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import TweetCheckUser, Organization, Action
+from .models import Organization, TweetCheckUser, Device, Action
 
 
 class TweetCheckUserAdmin(UserAdmin):
@@ -38,4 +38,5 @@ admin.site.register(TweetCheckUser, TweetCheckUserAdmin)
 admin.site.unregister(Group)
 admin.site.register(Organization, admin.ModelAdmin)
 
+admin.site.register(Device, admin.ModelAdmin)
 admin.site.register(Action, admin.ModelAdmin)
