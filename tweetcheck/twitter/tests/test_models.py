@@ -95,14 +95,16 @@ class TweetTest(TestCase):
 
         self.assertIsNone(tweet.clean_fields())
 
+    @responses.activate
     def test_publish(self):
-        from requests import Response
-        json_response = {'id_str': '123321'}
+        responses.add(responses.POST, 'https://api.twitter.com/1.1/statuses/update.json',
+            body='{"id_str": "123"}',
+            status=201,
+            content_type='application/json')
 
-        with patch.object(Response, 'json', return_value=json_response):
-            tweet_id = self.existing_tweet.publish()
+        tweet_id = self.existing_tweet.publish()
 
-        self.assertEqual(tweet_id, '123321')
+        self.assertEqual(tweet_id, '123')
 
     def test_send_redis_message_created(self):
         from redis import StrictRedis
