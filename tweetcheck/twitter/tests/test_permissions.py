@@ -84,4 +84,3 @@ class IsApproverTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['status'], Tweet.POSTED)
         self.assertEqual(response.data['twitter_id'], '123')
-
