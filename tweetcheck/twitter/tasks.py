@@ -14,7 +14,7 @@ def publish_later(self, tweet_id):
     tweet = Tweet.objects.get(pk=tweet_id)
 
     tweet_eta = arrow.get(tweet.eta)
-    task_eta = arrow.get(self.request.eta)
+    task_eta = arrow.get(self.request.get('eta'))
 
     # Don't publish if:
     # - The Tweet has been published already
