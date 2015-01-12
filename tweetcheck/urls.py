@@ -17,11 +17,11 @@ router.register(r'handles', HandleViewSet)
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^auth/request$', 'twitter.views.get_request_token'),
-    url(r'^auth/callback$', 'twitter.views.callback'),
+    url(r'^auth/request$', 'twitter.views.get_request_token', name='get_request_token'),
+    url(r'^auth/callback$', 'twitter.views.callback', name='callback'),
 
     url(r'^api/', include(router.urls)),
-    url(r'^api/counts/', ListCounts.as_view()),
+    url(r'^api/counts/', ListCounts.as_view(), name='tweet-counts'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
 )

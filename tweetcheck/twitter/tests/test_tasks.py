@@ -37,13 +37,13 @@ class TasksTest(TestCase):
             organization=org)
 
         with patch.object(Handle, 'update_details'):
-            mommy.make(Handle, screen_name='@test', organization=org)
+            mommy.make(Handle, screen_name='test', organization=org)
 
     def setUp(self):
         self.client = APIClient()
         self.client.login(email='admin@tweetcheck.com', password='testpass')
 
-        self.handle = Handle.objects.get(screen_name='@test')
+        self.handle = Handle.objects.get(screen_name='test')
 
     # publish_later
 
