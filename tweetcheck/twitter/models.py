@@ -10,6 +10,7 @@ import redis
 import requests
 
 from core.models import TweetCheckUser, Action
+from core.tasks import send_push_notifications
 from .tasks import publish_later, check_eta, publish_counts
 
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
@@ -148,7 +149,7 @@ class Tweet(models.Model):
         action.save()
 
         # Send a redis message that a tweet has changed
-        self.send_redis_message(activity_action)
+        self.send_updates(activity_action)
 
         # If the action was anything except edited, update all clients'
         # badge counts asynchronously
@@ -156,13 +157,19 @@ class Tweet(models.Model):
             publish_counts.apply_async(args=[self.handle.organization.id])
 
     @classmethod
+    def get_pending_count(cls, org_id):
+        return cls.objects.filter(handle__organization__id=org_id, status=Tweet.PENDING).count()
+
+    @classmethod
+    def get_scheduled_count(cls, org_id):
+        return cls.objects.filter(handle__organization__id=org_id, status=Tweet.SCHEDULED).count()
+
+    @classmethod
     def get_counts(cls, org_id):
         counts = {}
 
-        org_tweets = cls.objects.filter(handle__organization__id=org_id)
-
-        counts['pending'] = org_tweets.filter(status=Tweet.PENDING).count()
-        counts['scheduled'] = org_tweets.filter(status=Tweet.SCHEDULED).count()
+        counts['pending'] = cls.get_pending_count(org_id)
+        counts['scheduled'] = cls.get_scheduled_count(org_id)
 
         return counts
 
@@ -180,9 +187,10 @@ class Tweet(models.Model):
 
         return data['id_str']
 
-    def send_redis_message(self, action):
+    def send_updates(self, action):
         if action == Action.CREATED:
             message = 'new'
+            send_push_notifications.apply_async(args=[self.body, self.handle.organization.id, self.last_editor.id])
         else:
             message = self.id
 

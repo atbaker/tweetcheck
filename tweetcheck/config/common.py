@@ -139,4 +139,4 @@ TWITTER_API_KEY = os.environ.get('TWITTER_API_KEY')
 TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')
 
 # SNS settings
-APNS_ARN = 'arn:aws:sns:us-east-1:478997274323:app/APNS_SANDBOX/TweetCheck'
+SNS_APPLICATION = 'APNS_SANDBOX'
