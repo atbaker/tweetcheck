@@ -19,7 +19,7 @@ def send_push_notifications(body, org_id, last_editor_id):
     if len(body) > 35:
         body = body[:35].rsplit(' ', 1)[0]+'...'
 
-    alert = '{0} added a new tweet for review: "{1}"'.format(last_editor, body)
+    alert = '{0} added a new tweet for review: "{1}"'.format(last_editor.get_short_name(), body)
     message = {
         'aps': {
             'alert': alert,
