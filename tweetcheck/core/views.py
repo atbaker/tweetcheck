@@ -41,6 +41,12 @@ class DeviceViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
 
         return queryset
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
 class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = Action
     serializer_class = ActionSerializer
