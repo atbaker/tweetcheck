@@ -140,3 +140,11 @@ TWITTER_API_SECRET = os.environ.get('TWITTER_API_SECRET')
 
 # SNS settings
 SNS_APPLICATION = 'APNS_SANDBOX'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'andrew.tork.baker@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('MANDRILL_API_KEY')
+EMAIL_USE_TLS = True

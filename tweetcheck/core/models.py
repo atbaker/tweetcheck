@@ -17,7 +17,7 @@ class Organization(models.Model):
 
 
 class TweetUserManager(BaseUserManager):
-    def create_user(self, email, password, is_approver=False, organization=None):
+    def create_user(self, email, password, is_active=True, is_approver=False, organization=None):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -27,6 +27,7 @@ class TweetUserManager(BaseUserManager):
         )
 
         user.set_password(password)
+        user.is_active = is_active
         user.is_approver = is_approver
         user.save(using=self._db)
         return user
@@ -79,6 +80,10 @@ class TweetCheckUser(AbstractBaseUser):
     def is_staff(self):
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    def replace_auth_token(self):
+        self.auth_token.delete()
+        return Token.objects.create(user=self)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
