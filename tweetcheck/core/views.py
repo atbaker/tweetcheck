@@ -1,14 +1,16 @@
 from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
-from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 import json
 
 from .models import Organization, TweetCheckUser, Device, Action
+from .permissions import IsOrganizationAdmin
 from .serializers import UserSerializer, DeviceSerializer, ActionSerializer
 
 class OrganizationQuerysetMixin(object):
@@ -20,9 +22,10 @@ class OrganizationQuerysetMixin(object):
         else:
             return self.model.objects.filter(organization=self.request.user.organization)
 
-class UserViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
+class UserViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = TweetCheckUser
     serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,IsOrganizationAdmin)
 
     def get_queryset(self):
         queryset = super(UserViewSet, self).get_queryset()

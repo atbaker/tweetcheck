@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TweetCheckUser
         fields = ('id', 'email', 'email_without_domain', 'organization', 'is_approver', 'is_active')
+        read_only_fields = ('id', 'organization')
 
 class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
