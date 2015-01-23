@@ -1,7 +1,8 @@
-# Production Fig configuration file for TweetCheck
+# Test Fig configuration file for TweetCheck
 
 django:
-  image: atbaker/tweetcheck
+  build: .
+  command: "gunicorn -c tweetcheck/config/gunicorn_config.py --reload wsgi:application"
   links:
     - db:postgres
     - redis:redis
@@ -14,7 +15,7 @@ django:
     AWS_SECRET_ACCESS_KEY:
 
 celery:
-  image: atbaker/tweetcheck
+  image: tweetcheck_django:latest
   working_dir: "/usr/src/app/tweetcheck"
   command: "celery -A config worker --loglevel=info"
   links:

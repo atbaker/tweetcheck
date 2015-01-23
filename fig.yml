@@ -1,4 +1,4 @@
-# Fig configuration file for Hypermasher
+# Fig configuration file for TweetCheck
 
 django:
   build: .

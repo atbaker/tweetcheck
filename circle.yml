@@ -9,4 +9,4 @@ dependencies:
 
 test:
   override:
-    - fig run django coverage run tweetcheck/manage.py test --settings=config.test
+    - fig -f fig_test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
