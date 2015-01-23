@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from model_mommy import mommy
 from rest_framework.test import APIClient
+from requests_oauthlib import OAuth1Session
 from unittest.mock import patch
 
 import arrow
@@ -112,8 +113,13 @@ class TwitterAPIAuthorizationTest(TestCase):
 
     def test_get_request_token(self):
         url = reverse('get_request_token')
+        response = {
+            'resource_owner_key': '123',
+            'resource_owner_secret': '456'
+        }
 
-        response = self.client.get(url)
+        with patch.object(OAuth1Session, 'fetch_request_token', return_value=response):
+            response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('authorizationUrl', str(response.content))
