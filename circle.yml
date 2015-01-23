@@ -12,5 +12,10 @@ test:
   override:
     - fig -f fig_test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
   post:
-    - fig -f fig_test.yml run django coverage html -d $CIRCLE_ARTIFACTS
-    - fig -f fig_test.yml run django coverage xml -o $CIRCLE_TEST_REPORTS/output.xml
+    - fig -f fig_test.yml run django coverage html
+    - fig -f fig_test.yml run django coverage xml
+
+general:
+  artifacts:
+    - "htmlcov"
+    - "coverage.xml"
