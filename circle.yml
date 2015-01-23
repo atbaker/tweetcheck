@@ -5,10 +5,12 @@ machine:
 dependencies:
   override:
     - pip install -U fig
+    - fig -f fig_test.yml pull
     - fig -f fig_test.yml build
 
 test:
   override:
     - fig -f fig_test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
   post:
-    - fig -f fig_test.yml run django coverage xml
+    - fig -f fig_test.yml run django coverage html -d $CIRCLE_ARTIFACTS
+    - fig -f fig_test.yml run django coverage xml -o $CIRCLE_TEST_REPORTS/output.xml
