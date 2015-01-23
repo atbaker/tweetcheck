@@ -14,8 +14,8 @@ test:
   post:
     - fig -f fig_test.yml run django coverage html
     - fig -f fig_test.yml run django coverage xml
+    - cp coverage.xml $CIRCLE_TEST_REPORTS
 
 general:
   artifacts:
     - "htmlcov"
-    - "coverage.xml"
