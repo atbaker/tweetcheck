@@ -10,3 +10,5 @@ dependencies:
 test:
   override:
     - fig -f fig_test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
+  post:
+    - fig -f fig_test.yml run django coverage xml
