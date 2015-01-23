@@ -5,7 +5,7 @@ machine:
 dependencies:
   override:
     - pip install -U fig
-    - fig build
+    - fig -f fig_test.yml build
 
 test:
   override:
