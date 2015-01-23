@@ -1,0 +1,12 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - pip install -U fig
+    - fig build
+
+test:
+  override:
+    - fig run django coverage run tweetcheck/manage.py test --settings=config.test
