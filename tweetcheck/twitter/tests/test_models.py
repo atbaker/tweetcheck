@@ -106,11 +106,11 @@ class TweetTest(TestCase):
 
         self.assertEqual(tweet_id, '123')
 
-    def test_send_redis_message_created(self):
+    def test_send_updates(self):
         from redis import StrictRedis
 
         with patch.object(StrictRedis, 'publish') as mock:
-            self.existing_tweet.send_redis_message(Action.CREATED)
+            self.existing_tweet.send_updates(Action.CREATED)
 
         mock.assert_called_once_with(self.existing_tweet.handle.organization.id, 'new')
 
@@ -236,7 +236,7 @@ class TweetTest(TestCase):
         self.assertEqual(actions.first().action, Action.POSTED)
 
     def test_save_redis_message(self):
-        with patch.object(Tweet, 'send_redis_message') as mock:
+        with patch.object(Tweet, 'send_updates') as mock:
             mommy.make(Tweet, handle=self.handle)
 
         self.assertEqual(mock.call_count, 1)
