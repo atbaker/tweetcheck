@@ -1,8 +1,9 @@
+from boto import sns
 from django.test import TestCase
 from model_mommy import mommy
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
-from core.models import Organization, TweetCheckUser, Action
+from core.models import Organization, TweetCheckUser, Device, Action
 from twitter.models import Tweet, Handle
 
 def tearDownModule():
@@ -64,6 +65,31 @@ class TweetCheckUserTest(TestCase):
         user = mommy.make(TweetCheckUser, is_admin=True)
         self.assertTrue(user.is_staff)
 
+    def test_replace_token(self):
+        user = mommy.make(TweetCheckUser)
+        token = user.auth_token.key
+
+        user.replace_auth_token()
+
+        updated_user = TweetCheckUser.objects.get(pk=user.pk)
+        self.assertNotEqual(token, updated_user.auth_token.key)
+
+class DeviceTest(TestCase):
+
+    def test_save(self):
+        with patch.object(sns, 'connect_to_region') as mock:
+            sns_mock = Mock()
+            sns_mock.create_platform_endpoint.return_value = {'CreatePlatformEndpointResponse': {'CreatePlatformEndpointResult': {'EndpointArn': 'foo'}}}
+            mock.return_value = sns_mock
+            device = mommy.make(Device)
+
+        self.assertEqual(device.arn, 'foo')
+
+    def test_str(self):
+        with patch.object(Device, 'save'):
+            device = mommy.make(Device)
+
+        self.assertEqual(str(device), '{0} - {1}'.format(device.user, device.arn) )
 
 class ActionTest(TestCase):
 
