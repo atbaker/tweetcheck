@@ -10,4 +10,4 @@ Run the tests
 CI
 --
 
-Through CircleCI
+Through CircleCI: https://circleci.com/gh/atbaker/tweetcheck
