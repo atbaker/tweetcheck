@@ -22,19 +22,11 @@ class TweetViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = Tweet
     permission_classes = (IsAuthenticated,IsApprover)
     serializer_class = TweetSerializer
+    filter_fields = ('status',)
 
     def get_queryset(self):
         queryset = super(TweetViewSet, self).get_queryset()
         queryset.annotate(null_eta=Count('eta')).order_by('null_eta', 'eta', 'created')
-
-        query_params = self.request.QUERY_PARAMS
-        status = query_params.get('status', None)
-        if status is not None:
-            queryset = queryset.filter(status=status)
-
-        since_id = query_params.get('since_id', None)
-        if since_id is not None:
-            queryset = queryset.filter(id__gt=since_id)
 
         return queryset
 

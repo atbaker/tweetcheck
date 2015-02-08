@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
+import django_filters
 import json
 
 from .models import Organization, TweetCheckUser, Device, Action
@@ -22,19 +23,18 @@ class OrganizationQuerysetMixin(object):
         else:
             return self.model.objects.filter(organization=self.request.user.organization)
 
+class UserFilter(django_filters.FilterSet):
+    token = django_filters.CharFilter(name='auth_token__key')
+
+    class Meta:
+        model = TweetCheckUser
+        fields = ['is_approver', 'token']
+
 class UserViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = TweetCheckUser
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,IsOrganizationAdmin)
-
-    def get_queryset(self):
-        queryset = super(UserViewSet, self).get_queryset()
-
-        token = self.request.QUERY_PARAMS.get('token', None)
-        if token is not None:
-            queryset = queryset.filter(auth_token__key=token)
-
-        return queryset
+    filter_class = UserFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -42,15 +42,7 @@ class UserViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
 class DeviceViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
     model = Device
     serializer_class = DeviceSerializer
-
-    def get_queryset(self):
-        queryset = super(DeviceViewSet, self).get_queryset()
-
-        token = self.request.QUERY_PARAMS.get('token', None)
-        if token is not None:
-            queryset = queryset.filter(token=token)
-
-        return queryset
+    filter_fields = ('token',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -61,16 +53,8 @@ class DeviceViewSet(OrganizationQuerysetMixin, viewsets.ModelViewSet):
 class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
     model = Action
     serializer_class = ActionSerializer
+    filter_fields = ('tweet',)
     paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super(ActionViewSet, self).get_queryset()
-
-        tweet_id = self.request.QUERY_PARAMS.get('tweet_id', None)
-        if tweet_id is not None:
-            queryset = queryset.filter(tweet=tweet_id)
-
-        return queryset
 
 @require_http_methods(['POST'])
 @csrf_exempt

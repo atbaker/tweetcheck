@@ -57,21 +57,6 @@ class TweetViewSetTest(TestCase):
 
         self.assertEqual(len(response.data), 2)
 
-    def test_status_filter(self):
-        url = reverse('tweet-list')
-
-        response = self.client.get(url, {'status': Tweet.REJECTED})
-
-        self.assertEqual(len(response.data), 1)
-
-    def test_since_id_filter(self):
-        url = reverse('tweet-list')
-        first_tweet = Tweet.objects.first()
-
-        response = self.client.get(url, {'since_id': first_tweet.id})
-
-        self.assertEqual(len(response.data), 1)
-
     def test_perform_create(self):
         url = reverse('tweet-list')
 
