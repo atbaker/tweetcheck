@@ -1,6 +1,7 @@
 from boto import sns
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -84,6 +85,13 @@ class TweetCheckUser(AbstractBaseUser):
     def replace_auth_token(self):
         self.auth_token.delete()
         return Token.objects.create(user=self)
+
+    def send_activation_email(self):
+        token = self.auth_token.key
+
+        send_mail('Activate your TweetCheck account',
+            'Click here to activate your account: http://www.tweetcheck.com/auth/activate?key={0}'.format(token),
+            'no-reply@tweetcheck.com', [self.email], fail_silently=False)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

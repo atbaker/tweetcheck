@@ -3,9 +3,17 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from .models import TweetCheckUser
 
+class RegisterForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField()
+    organization = forms.CharField(max_length=150)
+
+class InviteForm(forms.Form):
+    email = forms.EmailField()
+    is_approver = forms.BooleanField(required=False)
+
 class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
+    """A form for creating new users. Used in Django admin."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
@@ -31,10 +39,7 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
-    """
+    """A form for updating users. Used in Django admin."""
     password = ReadOnlyPasswordHashField()
 
     class Meta:

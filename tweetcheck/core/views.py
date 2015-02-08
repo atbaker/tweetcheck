@@ -1,7 +1,7 @@
-from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework import viewsets
@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 import django_filters
 import json
 
+from .forms import RegisterForm, InviteForm
 from .models import Organization, TweetCheckUser, Device, Action
 from .permissions import IsOrganizationAdmin
 from .serializers import UserSerializer, DeviceSerializer, ActionSerializer
@@ -59,30 +60,59 @@ class ActionViewSet(OrganizationQuerysetMixin, viewsets.ReadOnlyModelViewSet):
 @require_http_methods(['POST'])
 @csrf_exempt
 def register(request):
-    data = json.loads(request.body.decode('utf-8'))
+    form = RegisterForm(json.loads(request.body.decode('utf-8')))
+
+    if not form.is_valid():
+        return JsonResponse(form.errors, status=400)
 
     try:
         with transaction.atomic():
-            organization = Organization.objects.create(name=data['organization'])
+            organization = Organization.objects.create(name=form.cleaned_data['organization'])
             user = TweetCheckUser.objects.create_user(
-                email=data['email'],
-                password=data['password'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'],
                 organization=organization,
                 is_active=False,
                 is_approver=True)
     except IntegrityError:
         return JsonResponse(
-            {'error': 'Email address {0} already has a TweetCheck account'.format(data['email'])},
+            {'error': 'Email address {0} already has a TweetCheck account.'.format(form.cleaned_data['email'])},
             status=400
         )
 
-    token = user.auth_token.key
-
-    send_mail('Activate your TweetCheck account',
-        'Click here to activate your account: http://www.tweetcheck.com/auth/activate?key={0}'.format(token),
-        'no-reply@tweetcheck.com', [user.email], fail_silently=False)
+    user.send_activation_email()
 
     return HttpResponse()
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def invite(request):
+    form = InviteForm(json.loads(request.body.decode('utf-8')))
+
+    if not form.is_valid():
+        return JsonResponse(form.errors, status=400)
+
+    request_user = TweetCheckUser.objects.get(auth_token__key=request.META['HTTP_AUTHORIZATION'].split()[1])
+    organization = request_user.organization
+
+    try:
+        user = TweetCheckUser.objects.create_user(
+            email=form.cleaned_data['email'],
+            password=get_random_string(), # Set a random password until the user is activated
+            organization=organization,
+            is_active=False,
+            is_approver=form.cleaned_data['is_approver'])
+    except IntegrityError:
+        return JsonResponse(
+            {'error': 'Email address {0} already has a TweetCheck account.'.format(form.cleaned_data['email'])},
+            status=400
+        )
+
+    user.send_activation_email()
+
+    serializer = UserSerializer(user)
+
+    return JsonResponse(serializer.data)
 
 def activate(request):
     token = request.GET['key']
