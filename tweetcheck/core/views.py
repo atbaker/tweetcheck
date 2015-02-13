@@ -114,6 +114,26 @@ def invite(request):
 
     return JsonResponse(serializer.data)
 
+def reinvite_user(request):
+    user_id = request.GET['user']
+
+    try:
+        user = TweetCheckUser.objects.get(pk=user_id)
+    except TweetCheckUser.DoesNotExist:
+        return JsonResponse(
+            {'error': 'There was an error reinviting this user.'},
+            status=400
+        )
+
+    if user.is_active:
+        # The user is already active and doesn't need to be reinvited
+        return HttpResponse()
+
+    user.replace_auth_token()
+    user.send_invitation_email()
+
+    return HttpResponse()
+
 @require_http_methods(['POST'])
 @csrf_exempt
 def activate_invitation(request):
