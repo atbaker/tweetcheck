@@ -93,6 +93,13 @@ class TweetCheckUser(AbstractBaseUser):
             'Click here to activate your account: http://www.tweetcheck.com/auth/activate?key={0}'.format(token),
             'no-reply@tweetcheck.com', [self.email], fail_silently=False)
 
+    def send_invitation_email(self):
+        token = self.auth_token.key
+
+        send_mail('Activate your TweetCheck account',
+            'You have been invited to use TweetCheck. Click here to activate your account: http://www.tweetcheck.com/activate-invitation?key={0}'.format(token),
+            'no-reply@tweetcheck.com', [self.email], fail_silently=False)
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

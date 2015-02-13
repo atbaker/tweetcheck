@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^auth/register$', 'core.views.register', name='register'),
     url(r'^auth/invite$', 'core.views.invite', name='invite'),
+    url(r'^auth/activate-invitation', 'core.views.activate_invitation', name='activate_invitation'),
     url(r'^auth/activate$', 'core.views.activate', name='activate'),
     url(r'^auth/request$', 'twitter.views.get_request_token', name='get_request_token'),
     url(r'^auth/callback$', 'twitter.views.callback', name='callback'),

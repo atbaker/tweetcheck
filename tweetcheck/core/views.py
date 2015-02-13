@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 import django_filters
 import json
 
-from .forms import RegisterForm, InviteForm
+from .forms import RegisterForm, InviteForm, InvitedUserForm
 from .models import Organization, TweetCheckUser, Device, Action
 from .permissions import IsOrganizationAdmin
 from .serializers import UserSerializer, DeviceSerializer, ActionSerializer
@@ -108,20 +108,46 @@ def invite(request):
             status=400
         )
 
-    user.send_activation_email()
+    user.send_invitation_email()
 
     serializer = UserSerializer(user)
 
     return JsonResponse(serializer.data)
 
+@require_http_methods(['POST'])
+@csrf_exempt
+def activate_invitation(request):
+    form = InvitedUserForm(json.loads(request.body.decode('utf-8')))
+
+    if not form.is_valid():
+        return JsonResponse(form.errors, status=400)
+
+    try:
+        user = TweetCheckUser.objects.get(auth_token__key=form.cleaned_data['token'])
+    except TweetCheckUser.DoesNotExist:
+        return JsonResponse(
+            {'error': 'This invitation link is not valid. Please ask someone to invite you again.'},
+            status=400
+        )
+
+    user.set_password(form.cleaned_data['password'])
+    user.is_active = True
+    user.save()
+
+    new_token = user.replace_auth_token()
+
+    return JsonResponse({'token': new_token.key})
+
 def activate(request):
     token = request.GET['key']
 
-    user = TweetCheckUser.objects.get(auth_token__key=token)
-
-    if user.is_active:
-        # This user is already active - no need to activate them
-        return redirect('/')
+    try:
+        user = TweetCheckUser.objects.get(auth_token__key=token)
+    except TweetCheckUser.DoesNotExist:
+        return JsonResponse(
+            {'error': 'This activation link is not valid. Have you registered this email address before?'},
+            status=400
+        )
 
     user.is_active = True
     user.save()

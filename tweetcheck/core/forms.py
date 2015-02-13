@@ -12,6 +12,10 @@ class InviteForm(forms.Form):
     email = forms.EmailField()
     is_approver = forms.BooleanField(required=False)
 
+class InvitedUserForm(forms.Form):
+    password = forms.CharField()
+    token = forms.CharField()
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Used in Django admin."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
