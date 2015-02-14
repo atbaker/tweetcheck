@@ -22,3 +22,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Twitter API settings
 TWITTER_API_KEY = '123'
 TWITTER_API_SECRET = '456'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -27,7 +27,7 @@ def send_push_notifications(body, org_id, last_editor_id):
             'sound': 'default'
         }
     }
-    sns_request = {settings.SNS_APPLICATION: json.dumps(message)}
+    sns_request = {settings.APNS_ARN: json.dumps(message)}
 
     for arn in arn_list:
         conn.publish(message=json.dumps(sns_request),

@@ -4,7 +4,7 @@ from model_mommy import mommy
 from rest_framework.test import APIClient
 from unittest.mock import patch
 
-from core.models import Organization, TweetCheckUser, Action
+from core.models import Organization, TweetCheckUser, Device, Action
 from twitter.models import Tweet, Handle
 
 def setUpModule():
@@ -19,6 +19,7 @@ def tearDownModule():
     # Core models
     Organization.objects.all().delete()
     TweetCheckUser.objects.all().delete()
+    Device.objects.all().delete()
     Action.objects.all().delete()
 
     # Tweet models

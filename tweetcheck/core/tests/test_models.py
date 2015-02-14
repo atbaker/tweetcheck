@@ -1,4 +1,3 @@
-from boto import sns
 from django.test import TestCase
 from model_mommy import mommy
 from unittest.mock import patch, Mock
@@ -10,6 +9,7 @@ def tearDownModule():
     # Core models
     Organization.objects.all().delete()
     TweetCheckUser.objects.all().delete()
+    Device.objects.all().delete()
     Action.objects.all().delete()
 
     # Tweet models
@@ -74,9 +74,12 @@ class TweetCheckUserTest(TestCase):
         updated_user = TweetCheckUser.objects.get(pk=user.pk)
         self.assertNotEqual(token, updated_user.auth_token.key)
 
+
 class DeviceTest(TestCase):
 
     def test_save(self):
+        from boto import sns
+
         with patch.object(sns, 'connect_to_region') as mock:
             sns_mock = Mock()
             sns_mock.create_platform_endpoint.return_value = {'CreatePlatformEndpointResponse': {'CreatePlatformEndpointResult': {'EndpointArn': 'foo'}}}

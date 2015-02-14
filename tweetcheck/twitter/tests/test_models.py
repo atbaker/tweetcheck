@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import responses
 
-from core.models import Organization, TweetCheckUser, Action
+from core.models import Organization, TweetCheckUser, Device, Action
 from twitter.models import Tweet, Handle, update_scheduling, set_eta_check
 
 def setUpModule():
@@ -20,6 +20,7 @@ def tearDownModule():
     # Core models
     Organization.objects.all().delete()
     TweetCheckUser.objects.all().delete()
+    Device.objects.all().delete()
     Action.objects.all().delete()
 
     # Tweet models

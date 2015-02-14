@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import arrow
 
-from core.models import Organization, TweetCheckUser, Action
+from core.models import Organization, TweetCheckUser, Device, Action
 from twitter.models import Tweet, Handle
 from twitter.tasks import publish_later, check_eta, publish_counts
 
@@ -22,13 +22,14 @@ def tearDownModule():
     # Core models
     Organization.objects.all().delete()
     TweetCheckUser.objects.all().delete()
+    Device.objects.all().delete()
     Action.objects.all().delete()
 
     # Tweet models
     Handle.objects.all().delete()
     Tweet.objects.all().delete()
 
-class TasksTest(TestCase):
+class TwitterTasksTest(TestCase):
     @classmethod
     def setUpClass(cls):
         org = Organization.objects.get(name='Test org')
