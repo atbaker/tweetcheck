@@ -4,15 +4,15 @@ machine:
 
 dependencies:
   override:
-    - pip install -U fig
-    - fig -f fig_test.yml pull
-    - fig -f fig_test.yml build
+    - pip install -U docker-compose
+    - docker-compose -f docker-compose-test.yml pull
+    - docker-compose -f docker-compose-test.yml build
 
 test:
   override:
-    - fig -f fig_test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
+    - docker-compose -f docker-compose-test.yml run django coverage run tweetcheck/manage.py test --settings=config.test
   post:
-    - fig -f fig_test.yml run django coverage html
+    - docker-compose -f docker-compose-test.yml run django coverage html
 
 general:
   artifacts:
