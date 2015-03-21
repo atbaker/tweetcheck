@@ -20,11 +20,11 @@ celery:
     C_FORCE_ROOT: "true"
 
 data:
-  image: postgres:9.3
+  image: postgres:9.4
   command: echo "Data-only container"
 
 db:
-  image: postgres:9.3
+  image: postgres:9.4
   volumes_from:
     - data
 

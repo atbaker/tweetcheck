@@ -9,11 +9,11 @@ from twitter.views import TweetViewSet, HandleViewSet, ListCounts
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'devices', DeviceViewSet)
-router.register(r'actions', ActionViewSet)
-router.register(r'tweets', TweetViewSet)
-router.register(r'handles', HandleViewSet)
+router.register(r'users', UserViewSet, 'tweetcheckuser')
+router.register(r'devices', DeviceViewSet, 'device')
+router.register(r'actions', ActionViewSet, 'action')
+router.register(r'tweets', TweetViewSet, 'tweet')
+router.register(r'handles', HandleViewSet, 'handle')
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -27,8 +27,9 @@ urlpatterns = patterns('',
     url(r'^auth/request$', 'twitter.views.get_request_token', name='get_request_token'),
     url(r'^auth/callback$', 'twitter.views.callback', name='callback'),
 
-    url(r'^api/', include(router.urls)),
     url(r'^api/counts/', ListCounts.as_view(), name='tweet-counts'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', obtain_auth_token),
+
+    url(r'^api/', include(router.urls))
 )
