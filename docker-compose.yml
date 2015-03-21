@@ -1,18 +1,13 @@
-# Fig configuration file for TweetCheck
+# Development Docker Compose configuration file for TweetCheck
 
 django:
   build: .
   command: "gunicorn -c tweetcheck/config/gunicorn_config.py --reload wsgi:application"
   links:
     - db:postgres
-    - redis:redis
-  environment:
-    TWITTER_API_KEY:
-    TWITTER_API_SECRET:
-    DJANGO_SETTINGS_MODULE:
-    DJANGO_SECRET_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
+    - redis
+  env_file:
+    - .env
   volumes:
     - .:/usr/src/app
 
@@ -22,24 +17,20 @@ celery:
   command: "celery -A config worker --loglevel=info"
   links:
     - db:postgres
-    - redis:redis
+    - redis
+  env_file:
+    - .env
   environment:
     C_FORCE_ROOT: "true"
-    TWITTER_API_KEY:
-    TWITTER_API_SECRET:
-    DJANGO_SETTINGS_MODULE:
-    DJANGO_SECRET_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
   volumes:
     - .:/usr/src/app
 
 data:
-  image: postgres:9.3
+  image: postgres:9.4
   command: echo "Data-only container"
 
 db:
-  image: postgres:9.3
+  image: postgres:9.4
   volumes_from:
     - data
 
@@ -49,7 +40,7 @@ redis:
 node:
   build: ../tweetcheck-node
   links:
-    - redis:redis
+    - redis
   volumes:
     - "../tweetcheck-node:/usr/src/app"
 
@@ -63,4 +54,4 @@ nginx:
     - "8001:443"
   links:
     - django:gunicorn
-    - node:node
+    - node

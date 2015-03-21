@@ -1,17 +1,12 @@
-# Production Fig configuration file for TweetCheck
+# Production Docker Compose configuration file for TweetCheck
 
 django:
   image: atbaker/tweetcheck
   links:
     - db:postgres
-    - redis:redis
-  environment:
-    TWITTER_API_KEY:
-    TWITTER_API_SECRET:
-    DJANGO_SETTINGS_MODULE:
-    DJANGO_SECRET_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
+    - redis
+  env_file:
+    - .env
 
 celery:
   image: atbaker/tweetcheck
@@ -19,22 +14,18 @@ celery:
   command: "celery -A config worker --loglevel=info"
   links:
     - db:postgres
-    - redis:redis
+    - redis
+  env_file:
+    - .env
   environment:
     C_FORCE_ROOT: "true"
-    TWITTER_API_KEY:
-    TWITTER_API_SECRET:
-    DJANGO_SETTINGS_MODULE:
-    DJANGO_SECRET_KEY:
-    AWS_ACCESS_KEY_ID:
-    AWS_SECRET_ACCESS_KEY:
 
 data:
-  image: postgres:9.3
+  image: postgres:9.4
   command: echo "Data-only container"
 
 db:
-  image: postgres:9.3
+  image: postgres:9.4
   volumes_from:
     - data
 
@@ -44,7 +35,7 @@ redis:
 node:
   image: atbaker/tweetcheck-node
   links:
-    - redis:redis
+    - redis
 
 nginx:
   image: atbaker/tweetcheck-angular
@@ -53,4 +44,4 @@ nginx:
     - "443:443"
   links:
     - django:gunicorn
-    - node:node
+    - node
