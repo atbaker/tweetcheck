@@ -44,11 +44,18 @@ node:
   volumes:
     - "../tweetcheck-node:/usr/src/app"
 
-nginx:
+angular:
   build: ../tweetcheck-angular
   volumes:
-    - ../tweetcheck-angular:/usr/share/nginx/html
-    - ../tweetcheck-angular/conf/nginx.conf:/etc/nginx/nginx.conf
+    - ../tweetcheck-angular:/usr/src/app
+
+nginx:
+  build: ../tweetcheck-nginx
+  command: bash -c 'rm /usr/share/nginx/html/dashboard && ln -s /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
+  volumes_from:
+    - angular
+  volumes:
+    - ../tweetcheck-nginx/nginx.conf:/etc/nginx/nginx.conf
   ports:
     - "8000:80"
     - "8001:443"
