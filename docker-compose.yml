@@ -1,64 +1,76 @@
 # Development Docker Compose configuration file for TweetCheck
 
 django:
+  extends:
+    file: docker-compose/common.yml
+    service: django
   build: .
-  command: "gunicorn -c tweetcheck/config/gunicorn_config.py --reload wsgi:application"
+  command: "gunicorn -c config/gunicorn_config.py --reload wsgi:application"
   links:
     - db:postgres
     - redis
-  env_file:
-    - .env
   volumes:
     - .:/usr/src/app
 
 celery:
-  image: tweetcheck_django:latest
-  working_dir: "/usr/src/app/tweetcheck"
-  command: "celery -A config worker --loglevel=info"
+  extends:
+    file: docker-compose/common.yml
+    service: celery
+  build: .
   links:
     - db:postgres
     - redis
-  env_file:
-    - .env
-  environment:
-    C_FORCE_ROOT: "true"
   volumes:
     - .:/usr/src/app
 
 data:
-  image: postgres:9.4
-  command: echo "Data-only container"
+  extends:
+    file: docker-compose/common.yml
+    service: data
 
 db:
-  image: postgres:9.4
+  extends:
+    file: docker-compose/common.yml
+    service: db
   volumes_from:
     - data
 
 redis:
-  image: redis:2.8
+  extends:
+    file: docker-compose/common.yml
+    service: redis
 
 node:
+  extends:
+    file: docker-compose/common.yml
+    service: node
   build: ../tweetcheck-node
   links:
     - redis
   volumes:
-    - "../tweetcheck-node:/usr/src/app"
+    - ../tweetcheck-node:/usr/src/app
 
 angular:
+  extends:
+    file: docker-compose/common.yml
+    service: angular
   build: ../tweetcheck-angular
   volumes:
     - ../tweetcheck-angular:/usr/src/app
 
 nginx:
+  extends:
+    file: docker-compose/common.yml
+    service: nginx
   build: ../tweetcheck-nginx
-  command: bash -c 'rm /usr/share/nginx/html/dashboard && ln -s /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
-  volumes_from:
-    - angular
-  volumes:
-    - ../tweetcheck-nginx/nginx.conf:/etc/nginx/nginx.conf
+  command: bash -c 'ln -sf /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
   ports:
     - "8000:80"
     - "8001:443"
   links:
     - django:gunicorn
     - node
+  volumes_from:
+    - angular
+  volumes:
+    - ../tweetcheck-nginx/nginx.conf:/etc/nginx/nginx.conf

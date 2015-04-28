@@ -1,0 +1,59 @@
+# Test Docker Compose configuration file for TweetCheck
+
+django:
+  extends:
+    file: common.yml
+    service: django
+  build: ../
+  links:
+    - db:postgres
+    - redis
+
+celery:
+  extends:
+    file: common.yml
+    service: celery
+  build: ../
+  links:
+    - db:postgres
+    - redis
+
+data:
+  extends:
+    file: common.yml
+    service: data
+
+db:
+  extends:
+    file: common.yml
+    service: db
+  volumes_from:
+    - data
+
+redis:
+  extends:
+    file: common.yml
+    service: redis
+
+node:
+  extends:
+    file: common.yml
+    service: node
+  links:
+    - redis
+
+angular:
+  extends:
+    file: common.yml
+    service: angular
+
+nginx:
+  extends:
+    file: common.yml
+    service: nginx
+  command: bash -c 'ln -sf /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
+  links:
+    - django:gunicorn
+    - node
+  volumes_from:
+    - angular

@@ -1,0 +1,54 @@
+# Production Docker Compose configuration file for TweetCheck
+
+django:
+  extends:
+    file: common.yml
+    service: django
+  links:
+    - db:postgres
+    - redis
+
+celery:
+  extends:
+    file: common.yml
+    service: celery
+  links:
+    - db:postgres
+    - redis
+
+data:
+  extends:
+    file: common.yml
+    service: data
+
+db:
+  extends:
+    file: common.yml
+    service: db
+  volumes_from:
+    - data
+
+redis:
+  extends:
+    file: common.yml
+    service: redis
+
+node:
+  extends:
+    file: common.yml
+    service: node
+  links:
+    - redis
+
+angular:
+  extends:
+    file: common.yml
+    service: angular
+
+nginx:
+  extends:
+    file: common.yml
+    service: nginx
+  image: atbaker/tweetcheck-nginx
+  volumes_from:
+    - angular
