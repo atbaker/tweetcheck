@@ -8,6 +8,8 @@ django:
   links:
     - db:postgres
     - redis
+  volumes:
+    - ../:/usr/src/app
 
 celery:
   extends:
