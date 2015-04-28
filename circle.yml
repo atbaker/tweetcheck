@@ -24,5 +24,5 @@ deployment:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker tag tweetcheck_django atbaker/tweetcheck
+      - docker tag dockercompose_django atbaker/tweetcheck
       - docker push atbaker/tweetcheck
