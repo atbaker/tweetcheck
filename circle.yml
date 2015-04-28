@@ -7,6 +7,7 @@ dependencies:
     - pip install -U docker-compose
     - docker-compose -f docker-compose/test.yml pull
     - docker-compose -f docker-compose/test.yml build
+    - touch .env
 
 test:
   override:
