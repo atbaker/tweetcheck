@@ -7,6 +7,8 @@ django:
   links:
     - db:postgres
     - redis
+  env_file:
+    - ../.env_prod
 
 celery:
   extends:
@@ -15,6 +17,8 @@ celery:
   links:
     - db:postgres
     - redis
+  env_file:
+    - ../.env_prod
 
 data:
   extends:
@@ -52,3 +56,6 @@ nginx:
   image: atbaker/tweetcheck-nginx
   volumes_from:
     - angular
+  links:
+    - django:gunicorn
+    - node
