@@ -63,7 +63,7 @@ nginx:
     file: docker-compose/common.yml
     service: nginx
   build: ../tweetcheck-nginx
-  command: bash -c 'ln -sf /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
+  command: bash -c 'rm /usr/share/nginx/html/dashboard && ln -s /usr/src/app/app /usr/share/nginx/html/dashboard && nginx -g "daemon off;"'
   ports:
     - "8000:80"
     - "8001:443"
