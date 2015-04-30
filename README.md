@@ -150,8 +150,6 @@ You can then access TweetCheck in your browser at [http://localhost:8000](http:/
 
 Through [Docker volumes](https://docs.docker.com/userguide/dockervolumes/), your source code is being shared with your running containers. So changes to the API or frontend code should be immediately evident without the need to rebuild your Docker images.
 
-If you want to test SSL support, you 
-
 **NOTE:** If you are using Docker on Mac or Windows with VirtualBox, you may experience slower performance (especially with the `angular` service) because of [this open issue](https://github.com/boot2docker/boot2docker/issues/64).
 
 ## Run the tests
