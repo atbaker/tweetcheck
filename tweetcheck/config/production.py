@@ -6,7 +6,8 @@ from .common import *
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['.tweetcheck.com', '45.55.216.93']
+# Allowing all hosts since we'll run on Docker
+ALLOWED_HOSTS = ['*']
 
 # CORS
 CORS_ORIGIN_WHITELIST = (
