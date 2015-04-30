@@ -92,8 +92,8 @@ Follow these instructions to run TweetCheck on your local development machine. I
 1. Copy `.env_example` to `.env_prod`, and supply the correct API keys (email me if you want them)
 1. Run `docker-compose -f docker-compose/prod.yml up -d`
 1. Run two commands to migrate and configure the database:
-  - `docker-compose run django python manage.py migrate`
-  - `docker-compose run django python manage.py setup_initial_data`
+  - `docker-compose -f docker-compose/prod.yml run django python manage.py migrate`
+  - `docker-compose -f docker-compose/prod.yml run django python manage.py setup_initial_data`
 
 If everything goes smoothly, you should see output like this:
 
@@ -124,11 +124,12 @@ Docker is also easiest way to actively develop on TweetCheck. Here's how to get 
   - https://github.com/atbaker/tweetcheck-nginx
   - https://github.com/atbaker/tweetcheck-angular
   - https://github.com/atbaker/tweetcheck-node
-1. Copy `.env_example` to `.env` and supply the correct API keys (email me if you want them)
+1. Copy `.env_example` to `.env` and supply the correct API keys (email me for them)
+1. Add the SSL certs for TweetCheck to a subdirectory called `certs` within the tweetcheck-nginx repo (email me for them)
 1. Run `docker-compose up -d`
 1. Run two commands to migrate and configure the database:
-  - `docker-compose -f docker-compose/prod.yml run django python manage.py migrate`
-  - `docker-compose -f docker-compose/prod.yml run django python manage.py setup_initial_data`
+  - `docker-compose run django python manage.py migrate`
+  - `docker-compose run django python manage.py setup_initial_data`
 
 If everything worked correctly, you can run `docker-compose ps` to see your stack running:
 
@@ -148,6 +149,8 @@ tweetcheck_redis_1     /entrypoint.sh redis-server      Up       6379/tcp
 You can then access TweetCheck in your browser at [http://localhost:8000](http://localhost:8000). (Or your `boot2docker ip` address). You can log in as admin@tweetcheck.com with the password `admin`.
 
 Through [Docker volumes](https://docs.docker.com/userguide/dockervolumes/), your source code is being shared with your running containers. So changes to the API or frontend code should be immediately evident without the need to rebuild your Docker images.
+
+If you want to test SSL support, you 
 
 **NOTE:** If you are using Docker on Mac or Windows with VirtualBox, you may experience slower performance (especially with the `angular` service) because of [this open issue](https://github.com/boot2docker/boot2docker/issues/64).
 
