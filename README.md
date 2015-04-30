@@ -48,6 +48,7 @@ TweetCheck is composed of two main stacks: the backend stack which powers the Tw
 - [Nginx](http://nginx.org/) is a reverse-proxy for the different backend components and serves the static files for the frontend components
 - [Docker](https://www.docker.com/) is used for each process in the stack to provide consistency between environments
 
+
 **Frontend:**
 - [AngularJS](https://angularjs.org/) powers the dashboard
 - [angular-ui-router](https://github.com/angular-ui/ui-router) is used to control the dashboard's state
@@ -55,7 +56,7 @@ TweetCheck is composed of two main stacks: the backend stack which powers the Tw
 - [Bootstrap](http://getbootstrap.com/css/) CSS was used for styling - with help from the [SB Admin 2](http://startbootstrap.com/template-overviews/sb-admin-2/) theme
 - [Ionic](http://ionicframework.com/) was used to build the mobile apps
 
-The site is currently hosted on [DigitalOcean](https://www.digitalocean.com/).
+The site is currently hosted on [DigitalOcean](https://www.digitalocean.com/). [Mandrill](https://mandrillapp.com/) is used to send emails in production.
 
 ### Improvements
 
@@ -112,7 +113,9 @@ You can now access TweetCheck by going to [http://localhost](http://localhost) o
 
 This is also the technique used to deploy TweetCheck to production, using with [docker-machine](https://github.com/docker/machine).
 
-**NOTE:** If you are running Docker on Mac or Windows, you will need to use the result of your `boot2docker ip` command instead of localhost.
+A few things to keep in mind when running TweetCheck locally:
+- If you are running Docker on Mac or Windows, you will need to use the result of your `boot2docker ip` command instead of localhost
+- When you try to authorize a Twitter handle with TweetCheck, you will be redirected to tweetcheck.com, not localhost. To complete authorization, just replace the `tweetcheck.com` part of the callback URL with localhost (or your `boot2docker ip`)
 
 ### Developing for TweetCheck
 
@@ -150,7 +153,9 @@ You can then access TweetCheck in your browser at [http://localhost:8000](http:/
 
 Through [Docker volumes](https://docs.docker.com/userguide/dockervolumes/), your source code is being shared with your running containers. So changes to the API or frontend code should be immediately evident without the need to rebuild your Docker images.
 
-**NOTE:** If you are using Docker on Mac or Windows with VirtualBox, you may experience slower performance (especially with the `angular` service) because of [this open issue](https://github.com/boot2docker/boot2docker/issues/64).
+A few things you should know about developing for TweetCheck:
+- If you are using Docker on Mac or Windows with VirtualBox, you may experience slower performance (especially with the `angular` service) because of [this open issue](https://github.com/boot2docker/boot2docker/issues/64)
+- Emails for activating new users won't be sent - you can read them in the Django logs instead: `docker-compose logs django`
 
 ## Run the tests
 
