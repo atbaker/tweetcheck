@@ -27,6 +27,7 @@ TweetCheck has a few other features as well:
 
 - Tweets can be scheduled to be posted at any time in the future (still subject to approval)
 - New tweets are automatically loaded in realtime on the dashboard as soon as they are submitted
+- The ability to use multiple Twitter handles within an organization
 - Some simple features for auditing TweetCheck activity, showing tweet history and activity history
 - Minimal user management features to allow the first user for an organization to invite (and disable) other users they work with
 - The dashboard is responsive so it can be used in mobile browsers
