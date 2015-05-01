@@ -36,4 +36,5 @@ OPBEAT = {
 
 MIDDLEWARE_CLASSES = (
     'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
+    'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
 ) + MIDDLEWARE_CLASSES
