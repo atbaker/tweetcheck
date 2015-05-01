@@ -21,3 +21,19 @@ REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
 REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
     'rest_framework.renderers.JSONRenderer',
 )
+
+
+# Opbeat
+THIRD_PARTY_APPS += (
+    'opbeat.contrib.django',
+)
+
+OPBEAT = {
+    "ORGANIZATION_ID": "a6501252831542bbac32b8970f04d9a6",
+    "APP_ID": "abaa6eeecc",
+    "SECRET_TOKEN": os.environ.get('OPBEAT_SECRET_TOKEN')
+}
+
+MIDDLEWARE_CLASSES = (
+    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
+) + MIDDLEWARE_CLASSES

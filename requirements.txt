@@ -10,6 +10,7 @@ djangorestframework==3.1.0
 djangorestframework-jwt==1.4.0
 dj-static==0.0.6
 gunicorn==19.3.0
+opbeat==2.1
 psycopg2==2.6
 redis==2.10.3
 requests==2.6.0
