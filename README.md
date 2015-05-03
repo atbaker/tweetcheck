@@ -78,7 +78,7 @@ If I picked up TweetCheck again, I would:
 If you just want to try TweetCheck for yourself, I recommend going to https://www.tweetcheck.com. To use the service, you will need to:
 
 1. Register an account (and a new organization) through the homepage
-1. Activate that account through an email notification
+1. Activate that account through an email notification (which may take a few minutes to arrive)
 1. Authorize a Twitter handle to use with TweetCheck
 
 After that, you can draft tweets for review and then post them to your handle. You can also invite other users to join your organization as authors or approvers.
