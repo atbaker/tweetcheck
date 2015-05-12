@@ -18,10 +18,6 @@ CORS_ORIGIN_WHITELIST = (
 REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
   'rest_framework.authentication.TokenAuthentication',
 )
-REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
-    'rest_framework.renderers.JSONRenderer',
-)
-
 
 # Opbeat
 THIRD_PARTY_APPS += (
