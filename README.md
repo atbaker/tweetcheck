@@ -160,7 +160,9 @@ A few things you should know about developing for TweetCheck:
 
 ## Run the tests
 
-TweetCheck's API currently has 87% code coverage. To run the tests yourself, first follow the instructions in the "Developing for TweetCheck" section above. Then run this command:
+TweetCheck's API currently has 87% code coverage.
+
+To run the tests yourself, first follow the instructions in the "Developing for TweetCheck" section above. Then run this command:
 
 ```
 docker-compose run django coverage run manage.py test --settings=config.test
