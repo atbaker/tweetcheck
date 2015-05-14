@@ -14,11 +14,6 @@ CORS_ORIGIN_WHITELIST = (
     'tweetcheck.com',
 )
 
-# REST Framework
-REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
-  'rest_framework.authentication.TokenAuthentication',
-)
-
 # Opbeat
 THIRD_PARTY_APPS += (
     'opbeat.contrib.django',
